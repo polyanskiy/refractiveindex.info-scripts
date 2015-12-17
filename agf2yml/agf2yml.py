@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# coding: utf-8
 ###########################################################################################
 #         THIS PROGRAM IS IN PUBLIC DOMAIN                                                #
 #         COPYRIGHT AND RELATED RIGHTS WAIVED VIA CC0 1.0                                 #
@@ -65,8 +67,11 @@ def WriteYML():
         
     
     print(str(glass_count)+': '+name)
+    try:
+        ymlfile = open(name+'.yml', 'w+', encoding='utf-8')
+    except TypeError: # Python2 has no encoding= argument
+        ymlfile = open(name+'.yml', 'w+')
         
-    ymlfile = open(name+'.yml', 'w+', encoding='utf-8')
 
     ymlfile.write('# this file is part of refractiveindex.info database\n# refractiveindex.info database is in the public domain\n# copyright and related rights waived via CC0 1.0\n\n')
     ymlfile.write('REFERENCES: "' + references + '"\n')
