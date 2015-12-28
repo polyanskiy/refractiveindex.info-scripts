@@ -14,9 +14,11 @@ Calculates optical constants of several metals
 Other projects interfacing with the database refractiveindex.info database
 
 ## PyTMM
-Database browser and Transfer Matrix Method implementation (by Pavel Dmitriev).
 https://github.com/kitchenknif/PyTMM
 
+Database browser and Transfer Matrix Method implementation (by Pavel Dmitriev)
+
 ## another refractiveindex.info scripts project
-Support for operations not possible through the web interface, e.g. find materials with refractive index within a specified range (by Marcin Stolarek).
 https://github.com/cinek810/refractiveindex.info
+
+Support for operations not possible through the web interface, e.g. find materials with refractive index within a specified range (by Marcin Stolarek)
