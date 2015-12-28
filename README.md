@@ -18,7 +18,7 @@ https://github.com/kitchenknif/PyTMM
 
 Database browser and Transfer Matrix Method implementation (by Pavel Dmitriev)
 
-## another refractiveindex.info scripts project
+## refractiveindex.info (another scripts project)
 https://github.com/cinek810/refractiveindex.info
 
 Support for operations not possible through the web interface, e.g. find materials with refractive index within a specified range (by Marcin Stolarek)
