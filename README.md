@@ -11,7 +11,7 @@ Converts ZEMAX `.agf` glass catalog format into `YAML` format used by the refrac
 Calculates optical constants of several metals
 
 # More scripts
-Other projects interfacing with the database refractiveindex.info database
+Other projects interfacing with the `refractiveindex.info database`
 
 ## PyTMM
 https://github.com/kitchenknif/PyTMM
