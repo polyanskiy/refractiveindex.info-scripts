@@ -1,11 +1,9 @@
-#!/usr/bin/python
-# coding: utf-8
 ###########################################################################################
 #         THIS PROGRAM IS IN PUBLIC DOMAIN                                                #
 #         COPYRIGHT AND RELATED RIGHTS WAIVED VIA CC0 1.0                                 #
 ###########################################################################################
 
-#                                  agf2yml v.2015-xx-xx                                   #
+#                                  agf2yml v.2015-12-27                                   #
 
 #-----------------------------------------------------------------------------------------#
 #  author: Mikhail Polyanskiy (polyanskiy@refractiveindex.info)                           #
@@ -14,12 +12,17 @@
 
 import os, math
 
-agffile = 'HIKARI.agf'
-ymldir = 'hikari'
-references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI_Catalog.pdf\\">HIKARI optical glass catalog 2015-04-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI.agf\\">HIKARI Zemax catalog</a>'
-# agffile = 'schottzemax-20150722.agf'
-# ymldir = 'schott'
-# references = '1) <a href=\"http://refractiveindex.info/download/data/2015/schott_optical_glass_collection_datasheets_jul_2015_us.pdf\">SCHOTT optical glass data sheets 2015-07-22</a><br>2) <a href=\"http://refractiveindex.info/download/data/2015/schottzemax-20150722.agf\">SCHOTT Zemax catalog 2015-07-22</a>'
+#agffile = 'HIKARI.agf'
+#ymldir = 'hikari'
+#references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI_Catalog.pdf\\">HIKARI optical glass catalog 2015-04-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI.agf\\">HIKARI Zemax catalog</a>'
+
+#agffile = 'schottzemax-20150722.agf'
+#ymldir = 'schott'
+#references = '1) <a href=\"http://refractiveindex.info/download/data/2015/schott_optical_glass_collection_datasheets_jul_2015_us.pdf\">SCHOTT optical glass data sheets 2015-07-22</a><br>2) <a href=\"http://refractiveindex.info/download/data/2015/schottzemax-20150722.agf\">SCHOTT Zemax catalog 2015-07-22</a>'
+
+agffile = 'OHARA_151201.agf'
+ymldir = 'ohara'
+references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/ohara_2015-12-01.pdf\\">OHARA optical glass datasheets 2015-12-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/OHARA_151201.agf\\">OHARA Zemax catalog 2015-12-01</a>'
 
 wl = []
 IT = []
@@ -65,13 +68,12 @@ def WriteYML():
             os.mkdir(ymldir)
         os.chdir(ymldir)
         
-    
     print(str(glass_count)+': '+name)
+    
     try:
         ymlfile = open(name+'.yml', 'w+', encoding='utf-8')
     except TypeError: # Python2 has no encoding= argument
         ymlfile = open(name+'.yml', 'w+')
-        
 
     ymlfile.write('# this file is part of refractiveindex.info database\n# refractiveindex.info database is in the public domain\n# copyright and related rights waived via CC0 1.0\n\n')
     ymlfile.write('REFERENCES: "' + references + '"\n')
@@ -109,7 +111,7 @@ def WriteYML():
         if float(disp_formula_coefficients[8]):
             ymlfile.write(' ' + format(float(disp_formula_coefficients[8])) + ' -12')
     if formula == "2":
-        ymlfile.write(' 0 ')
+        ymlfile.write(' 0')
         if len(disp_formula_coefficients)>1 and float(disp_formula_coefficients[0]):
             ymlfile.write(' ' + format(float(disp_formula_coefficients[0])) + ' ' + format(float(disp_formula_coefficients[1])))
         if len(disp_formula_coefficients)>3 and  float(disp_formula_coefficients[2]):
@@ -133,7 +135,7 @@ def WriteYML():
     for i in range (0,len(wl)):
         if float(IT[i]) != 0:
             k = -float(wl[i])/(4*math.pi)*math.log(float(IT[i]))/10000
-            ymlfile.write('      ' + "%.3f"%(float(wl[i])) + ' ' + format(k, '.4E') + '\n')
+            ymlfile.write('        ' + "%.3f"%(float(wl[i])) + ' ' + format(k, '.4E') + '\n')
             
     if len(thermal_disp_coefficients)>5 and (float(thermal_disp_coefficients[0]) or float(thermal_disp_coefficients[1]) or float(thermal_disp_coefficients[2]) or float(thermal_disp_coefficients[3]) or float(thermal_disp_coefficients[4]) or float(thermal_disp_coefficients[5])): 
         ymlfile.write('  - type: thermal_dispersion_formula\n')
@@ -142,8 +144,8 @@ def WriteYML():
     ymlfile.write('INFO:\n')
     if len(thermal_disp_coefficients)>6:
         ymlfile.write('    temperature: ' + format(float(thermal_disp_coefficients[6])) + ' °C\n')
-    ymlfile.write('    n_is_absolute: no\n')
-    ymlfile.write('    λ_is_vacuum: no\n')
+    ymlfile.write('    n_is_absolute: false\n')
+    ymlfile.write('    λ_is_vacuum: false\n')
     ymlfile.write('    n_d: ' + nd + '\n')
     ymlfile.write('    V_d: ' + vd + '\n')
     if float(glasscode)>100000:
