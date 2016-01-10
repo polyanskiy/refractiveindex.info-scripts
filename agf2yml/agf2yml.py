@@ -12,17 +12,17 @@
 
 import os, math
 
+agffile = 'schottzemax-20150722.agf'
+ymldir = 'schott'
+references = '1) <a href=\"http://refractiveindex.info/download/data/2015/schott_optical_glass_collection_datasheets_jul_2015_us.pdf\">SCHOTT optical glass data sheets 2015-07-22</a><br>2) <a href=\"http://refractiveindex.info/download/data/2015/schottzemax-20150722.agf\">SCHOTT Zemax catalog 2015-07-22</a>'
+
+#agffile = 'OHARA_151201.agf'
+#ymldir = 'ohara'
+#references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/ohara_2015-12-01.pdf\\">OHARA optical glass datasheets 2015-12-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/OHARA_151201.agf\\">OHARA Zemax catalog 2015-12-01</a>'
+
 #agffile = 'HIKARI.agf'
 #ymldir = 'hikari'
 #references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI_Catalog.pdf\\">HIKARI optical glass catalog 2015-04-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI.agf\\">HIKARI Zemax catalog</a>'
-
-#agffile = 'schottzemax-20150722.agf'
-#ymldir = 'schott'
-#references = '1) <a href=\"http://refractiveindex.info/download/data/2015/schott_optical_glass_collection_datasheets_jul_2015_us.pdf\">SCHOTT optical glass data sheets 2015-07-22</a><br>2) <a href=\"http://refractiveindex.info/download/data/2015/schottzemax-20150722.agf\">SCHOTT Zemax catalog 2015-07-22</a>'
-
-agffile = 'OHARA_151201.agf'
-ymldir = 'ohara'
-references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/ohara_2015-12-01.pdf\\">OHARA optical glass datasheets 2015-12-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/OHARA_151201.agf\\">OHARA Zemax catalog 2015-12-01</a>'
 
 wl = []
 IT = []
@@ -136,16 +136,14 @@ def WriteYML():
         if float(IT[i]) != 0:
             k = -float(wl[i])/(4*math.pi)*math.log(float(IT[i]))/10000
             ymlfile.write('        ' + "%.3f"%(float(wl[i])) + ' ' + format(k, '.4E') + '\n')
-            
-    if len(thermal_disp_coefficients)>5 and (float(thermal_disp_coefficients[0]) or float(thermal_disp_coefficients[1]) or float(thermal_disp_coefficients[2]) or float(thermal_disp_coefficients[3]) or float(thermal_disp_coefficients[4]) or float(thermal_disp_coefficients[5])): 
-        ymlfile.write('  - type: thermal_dispersion_formula\n')
-        ymlfile.write('    coefficients: ' + ' '.join([format(float(thermal_disp_coefficients[i])) for i in range(6) ]) + '\n')
     
     ymlfile.write('INFO:\n')
-    if len(thermal_disp_coefficients)>6:
-        ymlfile.write('    temperature: ' + format(float(thermal_disp_coefficients[6])) + ' °C\n')
     ymlfile.write('    n_is_absolute: false\n')
     ymlfile.write('    λ_is_vacuum: false\n')
+    if len(thermal_disp_coefficients)>6:
+        ymlfile.write('    temperature: ' + format(float(thermal_disp_coefficients[6])) + ' °C\n')
+    if len(thermal_disp_coefficients)>5 and (float(thermal_disp_coefficients[0]) or float(thermal_disp_coefficients[1]) or float(thermal_disp_coefficients[2]) or float(thermal_disp_coefficients[3]) or float(thermal_disp_coefficients[4]) or float(thermal_disp_coefficients[5])): 
+        ymlfile.write('    coefficients_of_thermal_dispersion: ' + ' '.join([format(float(thermal_disp_coefficients[i])) for i in range(6) ]) + '\n') 
     ymlfile.write('    n_d: ' + nd + '\n')
     ymlfile.write('    V_d: ' + vd + '\n')
     if float(glasscode)>100000:
@@ -164,14 +162,10 @@ def WriteYML():
         ymlfile.write('    glass_melt_frequency: ' + meltfreq + '\n')
     if density != '-' and float(density):
         ymlfile.write('    density: ' + format(float(density)) + ' g/cm<sup>3</sup>\n')
-    if (cte1 != '-' and float(cte1)) or (cte2 != '-' and float(cte2)):
-        ymlfile.write('    coefficient_of_thermal_expansion:\n')
-        if cte1 != '-' and float(cte1):
-            ymlfile.write('      - range: -30 70\n')
-            ymlfile.write('        coefficient: ' + format(round(float(cte1)*1.0e-6,15)) + ' K<sup>-1</sup>\n')
-        if cte2 != '-' and float(cte2):
-            ymlfile.write('      - range: 20 300\n')
-            ymlfile.write('        coefficient: ' + format(round(float(cte2)*1.0e-6,15)) + ' K<sup>-1</sup>\n')
+    if cte1 != '-' and float(cte1): #-30...70 C
+        ymlfile.write('    coefficient_of_thermal_expansion_1: ' + format(round(float(cte1)*1.0e-6,15)) + ' K<sup>-1</sup>\n')
+    if cte2 != '-' and float(cte2): #20...300 C
+        ymlfile.write('    coefficient_of_thermal_expansion_2: ' + format(round(float(cte2)*1.0e-6,15)) + ' K<sup>-1</sup>\n')
     if dpgf != '-' and float(dpgf):
         ymlfile.write('    ΔP_gF: ' + format(float(dpgf)) + '\n')
     if CR != '-' and float(CR) != -1:
