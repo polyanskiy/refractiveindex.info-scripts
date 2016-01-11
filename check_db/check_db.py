@@ -65,7 +65,7 @@ if __name__ == "__main__":
                     else:
                         page_auth = page["PAGE"]
                         page_name = page["name"]
-                        page_path = os.path.join(db_path, page["path"])
+                        page_path = os.path.normpath(os.path.join(db_path, page["path"]))
                         ct[-1]["content"][divider][-1]["book_page"][subpage] \
                             .append({
                                 "page_auth":page_auth,
