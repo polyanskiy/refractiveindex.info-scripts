@@ -3,7 +3,7 @@
 #         COPYRIGHT AND RELATED RIGHTS WAIVED VIA CC0 1.0                                 #
 ###########################################################################################
 
-#                                  agf2yml v.2015-12-27                                   #
+#                 agf2yml (Zemax to refractiveindex.info converter)                       #
 
 #-----------------------------------------------------------------------------------------#
 #  author: Mikhail Polyanskiy (polyanskiy@refractiveindex.info)                           #
@@ -12,17 +12,21 @@
 
 import os, math
 
-agffile = 'schottzemax-20150722.agf'
-ymldir = 'schott'
-references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/schott-optical-glass-collection-datasheets-july-2015-us.pdf\\">SCHOTT optical glass data sheets 2015-07-22</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/schottzemax-20150722.agf\\">SCHOTT Zemax catalog 2015-07-22</a>'
+#agffile = 'input/schottzemax-20150722.agf'
+#ymldir = 'output/schott'
+#references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/schott-optical-glass-collection-datasheets-july-2015-us.pdf\\">SCHOTT optical glass data sheets 2015-07-22</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/schottzemax-20150722.agf\\">SCHOTT Zemax catalog 2015-07-22</a>'
 
-#agffile = 'OHARA_151201.agf'
-#ymldir = 'ohara'
+#agffile = 'input/OHARA_151201.agf'
+#ymldir = 'output/ohara'
 #references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/ohara_2015-12-01.pdf\\">OHARA optical glass datasheets 2015-12-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/OHARA_151201.agf\\">OHARA Zemax catalog 2015-12-01</a>'
 
-#agffile = 'HIKARI.agf'
-#ymldir = 'hikari'
+#agffile = 'input/HIKARI.agf'
+#ymldir = 'output/hikari'
 #references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI_Catalog.pdf\\">HIKARI optical glass catalog 2015-04-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI.agf\\">HIKARI Zemax catalog</a>'
+
+agffile = 'input/HOYA20150618.agf'
+ymldir = 'output/hoya'
+references = '<a href=\\"http://refractiveindex.info/download/data/2015/HOYA20150618.agf\\">HOYA Zemax catalog 2015-06-18</a>'
 
 wl = []
 IT = []
@@ -82,9 +86,7 @@ def WriteYML():
         ymlfile.write('COMMENTS: "' + ' '.join(comments) + '"\n')
     
     ymlfile.write('DATA:\n')
-    
-    #ymlfile.write('  - type: formula ' + formula + '\n')
-    #ymlfile.write('    coefficients: ' + ' '.join([format(float(i)) for i in disp_formula_coefficients]) + '\n')
+
     if formula == "1" or formula == "13":
         ymlfile.write('  - type: formula 3 \n')
     if formula == "2":
