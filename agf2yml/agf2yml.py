@@ -12,9 +12,9 @@
 
 import os, math
 
-#agffile = 'input/schottzemax-20150722.agf'
-#ymldir = 'output/schott'
-#references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/schott-optical-glass-collection-datasheets-july-2015-us.pdf\\">SCHOTT optical glass data sheets 2015-07-22</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/schottzemax-20150722.agf\\">SCHOTT Zemax catalog 2015-07-22</a>'
+agffile = 'input/schottzemax-20150722.agf'
+ymldir = 'output/schott'
+references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/schott-optical-glass-collection-datasheets-july-2015-us.pdf\\">SCHOTT optical glass data sheets 2015-07-22</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/schottzemax-20150722.agf\\">SCHOTT Zemax catalog 2015-07-22</a>'
 
 #agffile = 'input/OHARA_151201.agf'
 #ymldir = 'output/ohara'
@@ -24,12 +24,13 @@ import os, math
 #ymldir = 'output/hikari'
 #references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI_Catalog.pdf\\">HIKARI optical glass catalog 2015-04-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI.agf\\">HIKARI Zemax catalog</a>'
 
-agffile = 'input/HOYA20150618.agf'
-ymldir = 'output/hoya'
-references = '<a href=\\"http://refractiveindex.info/download/data/2015/HOYA20150618.agf\\">HOYA Zemax catalog 2015-06-18</a>'
+#agffile = 'input/HOYA20150618.agf'
+#ymldir = 'output/hoya'
+#references = '<a href=\\"http://refractiveindex.info/download/data/2015/HOYA20150618.agf\\">HOYA Zemax catalog 2015-06-18</a>'
 
 wl = []
 IT = []
+thickness = []
 
 
 def ClearGlassData():
@@ -62,6 +63,7 @@ def ClearGlassData():
 
     del wl[:]
     del IT[:]
+    del thickness[:]
 
 
 
@@ -136,7 +138,7 @@ def WriteYML():
     ymlfile.write('    data: |\n')  
     for i in range (0,len(wl)):
         if float(IT[i]) != 0:
-            k = -float(wl[i])/(4*math.pi)*math.log(float(IT[i]))/10000
+            k = -float(wl[i])/(4*math.pi)*math.log(float(IT[i]))/(float(thickness[i])*1000)
             ymlfile.write('        ' + "%.3f"%(float(wl[i])) + ' ' + format(k, '.4E') + '\n')
     
     ymlfile.write('INFO:\n')
@@ -244,6 +246,7 @@ with open(agffile) as agf:
         if data[0] == 'IT':
             wl.append(data[1])
             IT.append(data[2])
+            thickness.append(data[3])
             continue
         if data[0] == 'GC':
             data.remove('GC')
