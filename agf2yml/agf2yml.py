@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# coding: utf-8
 ###########################################################################################
 #         THIS PROGRAM IS IN PUBLIC DOMAIN                                                #
 #         COPYRIGHT AND RELATED RIGHTS WAIVED VIA CC0 1.0                                 #
@@ -93,95 +95,77 @@ def WriteYML():
         ymlfile.write('  - type: formula 3 \n')
     if formula == "2":
         ymlfile.write('  - type: formula 2 \n')
-    ymlfile.write('    range: ' + format(float(wlmin)) + ' ' + format(float(wlmax)) + '\n')
+    ymlfile.write('    range: {} {}\n'.format(wlmin, wlmax))
     ymlfile.write('    coefficients:')
     if formula == "1" or formula == "13":
-        if float(disp_formula_coefficients[0]):
-            ymlfile.write(' ' + format(float(disp_formula_coefficients[0])))
-        if float(disp_formula_coefficients[1]):
-            ymlfile.write(' ' + format(float(disp_formula_coefficients[1])) + ' 2')
-        if float(disp_formula_coefficients[2]):
-            ymlfile.write(' ' + format(float(disp_formula_coefficients[2])) + ' 4')
-        if float(disp_formula_coefficients[3]):
-            ymlfile.write(' ' + format(float(disp_formula_coefficients[3])) + ' -2')
-        if float(disp_formula_coefficients[4]):
-            ymlfile.write(' ' + format(float(disp_formula_coefficients[4])) + ' -4')
-        if float(disp_formula_coefficients[5]):
-            ymlfile.write(' ' + format(float(disp_formula_coefficients[5])) + ' -6')
-        if float(disp_formula_coefficients[6]):
-            ymlfile.write(' ' + format(float(disp_formula_coefficients[6])) + ' -8')
-        if float(disp_formula_coefficients[7]):
-            ymlfile.write(' ' + format(float(disp_formula_coefficients[7])) + ' -10')
-        if float(disp_formula_coefficients[8]):
-            ymlfile.write(' ' + format(float(disp_formula_coefficients[8])) + ' -12')
+        for i, k in zip(range(8), ['', 2, 4, -2, -6, -8, -10, -12]):
+            if float(disp_formula_coefficients[i]):
+                ymlfile.write(' {} {}'.format(disp_formula_coefficients[i], k))
     if formula == "2":
         ymlfile.write(' 0')
-        if len(disp_formula_coefficients)>1 and float(disp_formula_coefficients[0]):
-            ymlfile.write(' ' + format(float(disp_formula_coefficients[0])) + ' ' + format(float(disp_formula_coefficients[1])))
-        if len(disp_formula_coefficients)>3 and  float(disp_formula_coefficients[2]):
-            ymlfile.write(' ' + format(float(disp_formula_coefficients[2])) + ' ' + format(float(disp_formula_coefficients[3])))
-        if len(disp_formula_coefficients)>5 and  float(disp_formula_coefficients[4]):
-            ymlfile.write(' ' + format(float(disp_formula_coefficients[4])) + ' ' + format(float(disp_formula_coefficients[5])))
-        if len(disp_formula_coefficients)>7 and  float(disp_formula_coefficients[6]):
-            ymlfile.write(' ' + format(float(disp_formula_coefficients[6])) + ' ' + format(float(disp_formula_coefficients[7])))
-        if len(disp_formula_coefficients)>9 and  float(disp_formula_coefficients[8]):
-            ymlfile.write(' ' + format(float(disp_formula_coefficients[8])) + ' ' + format(float(disp_formula_coefficients[9])))
-        if len(disp_formula_coefficients)>11 and  float(disp_formula_coefficients[10]):
-            ymlfile.write(' ' + format(float(disp_formula_coefficients[10])) + ' ' + format(float(disp_formula_coefficients[11])))
-        if len(disp_formula_coefficients)>13 and  float(disp_formula_coefficients[12]):
-            ymlfile.write(' ' + format(float(disp_formula_coefficients[12])) + ' ' + format(float(disp_formula_coefficients[13])))
-        if len(disp_formula_coefficients)>15 and  float(disp_formula_coefficients[14]):
-            ymlfile.write(' ' + format(float(disp_formula_coefficients[14])) + ' ' + format(float(disp_formula_coefficients[15])))
+        num_coeff = len(disp_formula_coefficients) 
+        for i in range(0, 16, 2):
+            if num_coeff > i+1 and float(disp_formula_coefficients[i]):
+                ymlfile.write(' {} {}'.format(disp_formula_coefficients[i],
+                                              disp_formula_coefficients[i+1]))
     ymlfile.write('\n')
     
     ymlfile.write('  - type: tabulated k\n')
     ymlfile.write('    data: |\n')  
     for i in range (0,len(wl)):
         if float(IT[i]) != 0:
-            k = -float(wl[i])/(4*math.pi)*math.log(float(IT[i]))/(float(thickness[i])*1000)
-            ymlfile.write('        ' + "%.3f"%(float(wl[i])) + ' ' + format(k, '.4E') + '\n')
+            k = -float(wl[i]) / (4*math.pi) * \
+                math.log(float(IT[i])) / (float(thickness[i])*1000)
+            ymlfile.write('        {:.3f} {:.4E}\n'.format(float(wl[i]), k))
     
     ymlfile.write('INFO:\n')
     ymlfile.write('    n_is_absolute: false\n')
     ymlfile.write('    λ_is_vacuum: false\n')
-    if len(thermal_disp_coefficients)>6:
-        ymlfile.write('    temperature: ' + format(float(thermal_disp_coefficients[6])) + ' °C\n')
-    if len(thermal_disp_coefficients)>5 and (float(thermal_disp_coefficients[0]) or float(thermal_disp_coefficients[1]) or float(thermal_disp_coefficients[2]) or float(thermal_disp_coefficients[3]) or float(thermal_disp_coefficients[4]) or float(thermal_disp_coefficients[5])): 
-        ymlfile.write('    coefficients_of_thermal_dispersion: ' + ' '.join([format(float(thermal_disp_coefficients[i])) for i in range(6) ]) + '\n') 
-    ymlfile.write('    n_d: ' + nd + '\n')
-    ymlfile.write('    V_d: ' + vd + '\n')
-    if float(glasscode)>100000:
+    if len(thermal_disp_coefficients) > 6:
+        ymlfile.write('    temperature: {}  °C\n'.format(thermal_disp_coefficients[6]))
+    if len(thermal_disp_coefficients) > 5 and \
+        (float(thermal_disp_coefficients[0]) or \
+            float(thermal_disp_coefficients[1]) or \
+            float(thermal_disp_coefficients[2]) or \
+            float(thermal_disp_coefficients[3]) or \
+            float(thermal_disp_coefficients[4]) or \
+            float(thermal_disp_coefficients[5])): 
+        ymlfile.write('    coefficients_of_thermal_dispersion: {}\n'\
+            .format(' '.join([format(float(thermal_disp_coefficients[i])) \
+                              for i in range(6) ]))) 
+    ymlfile.write('    n_d: {}\n'.format(nd))
+    ymlfile.write('    V_d: {}\n'.format(vd))
+    if float(glasscode) > 100000:
         ymlfile.write('    glass_code: ' + glasscode + '\n')
-    if float(status)==1:    
-        ymlfile.write('    glass_status: standard\n')
-    if float(status)==2:    
-        ymlfile.write('    glass_status: preferred\n')
-    if float(status)==3:    
-        ymlfile.write('    glass_status: special\n')
-    if float(status)==4:    
-        ymlfile.write('    glass_status: obsolete\n')
-    if float(status)==5:    
-        ymlfile.write('    glass_status: melt\n')
+    
+    status_name = {1:'standard', 2:'preferred', 3:'special', 4:'obsolete',
+                   5:'melt'}
+    for num, desc in status_name.items():
+        if int(float(status)) == num:
+             ymlfile.write('    glass_status: {}\n'.format(desc))
+
     if meltfreq != 0:
-        ymlfile.write('    glass_melt_frequency: ' + meltfreq + '\n')
+        ymlfile.write('    glass_melt_frequency: {}\n'.format(meltfreq))
     if density != '-' and float(density):
-        ymlfile.write('    density: ' + format(float(density)) + ' g/cm<sup>3</sup>\n')
+        ymlfile.write('    density: {} g/cm<sup>3</sup>\n'.format(density))
     if cte1 != '-' and float(cte1): #-30...70 C
-        ymlfile.write('    coefficient_of_thermal_expansion_1: ' + format(round(float(cte1)*1.0e-6,15)) + ' K<sup>-1</sup>\n')
+        ymlfile.write('    coefficient_of_thermal_expansion_1: {} K<sup>-1</sup>\n'\
+                      .format(round(float(cte1)*1.0e-6,15)))
     if cte2 != '-' and float(cte2): #20...300 C
-        ymlfile.write('    coefficient_of_thermal_expansion_2: ' + format(round(float(cte2)*1.0e-6,15)) + ' K<sup>-1</sup>\n')
+        ymlfile.write('    coefficient_of_thermal_expansion_2: {} K<sup>-1</sup>\n'.\
+                       format(round(float(cte2)*1.0e-6,15)))
     if dpgf != '-' and float(dpgf):
-        ymlfile.write('    ΔP_gF: ' + format(float(dpgf)) + '\n')
+        ymlfile.write('    ΔP_gF: {}\n'.format(dpgf))
     if CR != '-' and float(CR) != -1:
-        ymlfile.write('    climatic_resistance: ' + format(float(CR)) + '\n')
+        ymlfile.write('    climatic_resistance: {}\n'.format(CR))
     if FR != '-' and float(FR) != -1:
-        ymlfile.write('    stain_resistance: ' + format(float(FR)) + '\n')
+        ymlfile.write('    stain_resistance: {}\n'.format(FR))
     if SR != '-' and float(SR) != -1:
-        ymlfile.write('    acid_resistance: ' + format(float(SR)) + '\n')
+        ymlfile.write('    acid_resistance: {}\n'.format(float(SR)))
     if AR != '-' and float(AR) != -1:
-        ymlfile.write('    alkali_resistance: ' + format(float(AR)) + '\n')
+        ymlfile.write('    alkali_resistance: {}\n'.format(AR))
     if PR != '-' and float(PR) != -1:
-        ymlfile.write('    phosphate_resistance: ' + format(float(PR)) + '\n')
+        ymlfile.write('    phosphate_resistance: {}\n'.format(PR))
 
     ymlfile.close()
     
