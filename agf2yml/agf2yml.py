@@ -35,6 +35,11 @@ agffiles.append('input/HOYA20150618.agf')
 ymldirs.append('output/hoya')
 refs.append('<a href=\\"http://refractiveindex.info/download/data/2015/HOYA20150618.agf\\">HOYA Zemax catalog 2015-06-18</a>')
 
+"""
+agffiles.append('input/sumita.agf')
+ymldirs.append('output/sumita')
+refs.append('<a href=\"http://www.sumita-opt.co.jp/en/catalog.htm\">Sumita Optical Glass Data Book</a>')
+"""
 
 class GlassData:
     wl = None
@@ -74,12 +79,6 @@ class GlassData:
 
 
 def WriteYML(gd, ymldir, references): 
-    
-    if gd.glass_count == 1:
-        if not os.path.exists(ymldir):
-            print "Path %s doesn't exist" % ymldir
-            os.mkdir(ymldir)
-        
     print('{}: {}'.format(gd.glass_count, gd.name))
     yml_file_path = os.path.join(ymldir, gd.name)
     try:
@@ -102,7 +101,9 @@ def WriteYML(gd, ymldir, references):
     ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
     ymlfile.write('    coefficients:')
     if gd.formula == "1" or gd.formula == "13":
-        for i, k in zip(range(9), [None, 2, 4, -2, -4, -6, -8, -10, -12]):
+        n_coeffs = len(gd.disp_formula_coefficients)
+        
+        for i, k in zip(range(n_coeffs), [None, 2, 4, -2, -4, -6, -8, -10, -12][:n_coeffs]):
             if float(gd.disp_formula_coefficients[i]):
                 ymlfile.write(' {}'.format(float(gd.disp_formula_coefficients[i]), k))
                 if k != None:
@@ -242,5 +243,8 @@ def process(agf_file, out_dir, ref):
 ### main program
 if __name__ == "__main__":
     for agffile, dir_, ref in zip(agffiles, ymldirs, refs):
+        # Make output dir
+        if not os.path.exists(dir_):
+            os.mkdir(dir_)
         process(agffile, dir_, ref)
     
