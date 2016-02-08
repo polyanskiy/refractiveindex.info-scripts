@@ -14,23 +14,27 @@
 
 import os, math
 
-agffile = 'input/schottzemax-20150722.agf'
-ymldir = 'output/schott'
-references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/schott-optical-glass-collection-datasheets-july-2015-us.pdf\\">SCHOTT optical glass data sheets 2015-07-22</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/schottzemax-20150722.agf\\">SCHOTT Zemax catalog 2015-07-22</a>'
+agffiles = []
+ymldirs = []
+refs = []
 
-"""
-agffile = 'input/OHARA_151201.agf'
-ymldir = 'output/ohara'
-references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/ohara_2015-12-01.pdf\\">OHARA optical glass datasheets 2015-12-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/OHARA_151201.agf\\">OHARA Zemax catalog 2015-12-01</a>'
+agffiles.append('input/schottzemax-20150722.agf')
+ymldirs.append('output/schott')
+refs.append('1) <a href=\\"http://refractiveindex.info/download/data/2015/schott-optical-glass-collection-datasheets-july-2015-us.pdf\\">SCHOTT optical glass data sheets 2015-07-22</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/schottzemax-20150722.agf\\">SCHOTT Zemax catalog 2015-07-22</a>')
 
-agffile = 'input/HIKARI.agf'
-ymldir = 'output/hikari'
-references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI_Catalog.pdf\\">HIKARI optical glass catalog 2015-04-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI.agf\\">HIKARI Zemax catalog</a>'
 
-agffile = 'input/HOYA20150618.agf'
-ymldir = 'output/hoya'
-references = '<a href=\\"http://refractiveindex.info/download/data/2015/HOYA20150618.agf\\">HOYA Zemax catalog 2015-06-18</a>'
-"""
+agffiles.append('input/OHARA_151201.agf')
+ymldirs.append('output/ohara')
+refs.append('1) <a href=\\"http://refractiveindex.info/download/data/2015/ohara_2015-12-01.pdf\\">OHARA optical glass datasheets 2015-12-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/OHARA_151201.agf\\">OHARA Zemax catalog 2015-12-01</a>')
+
+agffiles.append('input/HIKARI.agf')
+ymldirs.append('output/hikari')
+refs.append('1) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI_Catalog.pdf\\">HIKARI optical glass catalog 2015-04-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI.agf\\">HIKARI Zemax catalog</a>')
+
+agffiles.append('input/HOYA20150618.agf')
+ymldirs.append('output/hoya')
+refs.append('<a href=\\"http://refractiveindex.info/download/data/2015/HOYA20150618.agf\\">HOYA Zemax catalog 2015-06-18</a>')
+
 
 class GlassData:
     wl = None
@@ -69,7 +73,7 @@ class GlassData:
         self.wl, self.IT, self.thickness = [],[],[]
 
 
-def WriteYML(gd): 
+def WriteYML(gd, ymldir, references): 
     
     if gd.glass_count == 1:
         if not os.path.exists(ymldir):
@@ -98,9 +102,12 @@ def WriteYML(gd):
     ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
     ymlfile.write('    coefficients:')
     if gd.formula == "1" or gd.formula == "13":
-        for i, k in zip(range(8), ['', 2, 4, -2, -6, -8, -10, -12]):
+        for i, k in zip(range(9), [None, 2, 4, -2, -4, -6, -8, -10, -12]):
             if float(gd.disp_formula_coefficients[i]):
-                ymlfile.write(' {} {}'.format(gd.disp_formula_coefficients[i], k))
+                ymlfile.write(' {}'.format(float(gd.disp_formula_coefficients[i]), k))
+                if k != None:
+                    ymlfile.write(' {}'.format(k))
+                    
     if gd.formula == "2":
         ymlfile.write(' 0')
         num_coeff = len(gd.disp_formula_coefficients) 
@@ -108,6 +115,7 @@ def WriteYML(gd):
             if num_coeff > i+1 and float(gd.disp_formula_coefficients[i]):
                 ymlfile.write(' {} {}'.format(float(gd.disp_formula_coefficients[i]),
                                               float(gd.disp_formula_coefficients[i+1])))
+                
     ymlfile.write('\n')
     
     ymlfile.write('  - type: tabulated k\n')
@@ -171,7 +179,7 @@ def WriteYML(gd):
     
     print('ok')
 
-def process(agf_file):
+def process(agf_file, out_dir, ref):
     gd = GlassData()
     with open(agf_file) as agf:
         for line in agf:
@@ -180,7 +188,7 @@ def process(agf_file):
                 continue
             if data[0] == 'NM':
                 if gd.glass_count!=0:
-                    WriteYML(gd)
+                    WriteYML(gd, out_dir, ref)
                     #sys.exit(0)
                 gd = GlassData()
                 gd.glass_count +=1
@@ -229,9 +237,10 @@ def process(agf_file):
             if data[0] == 'GC':
                 gd.comments = data[1:]
 
-        if gd.glass_count!=0: WriteYML(gd)
+        if gd.glass_count!=0: WriteYML(gd, out_dir, ref)
 
 ### main program
 if __name__ == "__main__":
-    process(agffile)
+    for agffile, dir_, ref in zip(agffiles, ymldirs, refs):
+        process(agffile, dir_, ref)
     
