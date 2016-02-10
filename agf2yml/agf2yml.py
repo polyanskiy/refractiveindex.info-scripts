@@ -18,28 +18,30 @@ agffiles = []
 ymldirs = []
 refs = []
 
-agffiles.append('input/schottzemax-20150722.agf')
-ymldirs.append('output/schott')
-refs.append('1) <a href=\\"http://refractiveindex.info/download/data/2015/schott-optical-glass-collection-datasheets-july-2015-us.pdf\\">SCHOTT optical glass data sheets 2015-07-22</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/schottzemax-20150722.agf\\">SCHOTT Zemax catalog 2015-07-22</a>')
+agf_catalogs = {}
+
+agf_catalogs['schott'] = {'file': 'input/schottzemax-20150722.agf',
+                          'dir': 'output/schott',
+                          'refs': '1) <a href=\\"http://refractiveindex.info/download/data/2015/schott-optical-glass-collection-datasheets-july-2015-us.pdf\\">SCHOTT optical glass data sheets 2015-07-22</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/schottzemax-20150722.agf\\">SCHOTT Zemax catalog 2015-07-22</a>'}
+
+agf_catalogs['ohara'] = {'file': 'input/OHARA_151201.agf',
+                         'dir': 'output/ohara', 
+                         'refs': '1) <a href=\\"http://refractiveindex.info/download/data/2015/ohara_2015-12-01.pdf\\">OHARA optical glass datasheets 2015-12-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/OHARA_151201.agf\\">OHARA Zemax catalog 2015-12-01</a>'}
+
+agf_catalogs['hikari'] = {'file': 'input/HIKARI.agf',
+                          'dir': 'output/hikari',
+                          'refs': '1) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI_Catalog.pdf\\">HIKARI optical glass catalog 2015-04-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI.agf\\">HIKARI Zemax catalog</a>'}
 
 
-agffiles.append('input/OHARA_151201.agf')
-ymldirs.append('output/ohara')
-refs.append('1) <a href=\\"http://refractiveindex.info/download/data/2015/ohara_2015-12-01.pdf\\">OHARA optical glass datasheets 2015-12-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/OHARA_151201.agf\\">OHARA Zemax catalog 2015-12-01</a>')
+agf_catalogs['hoya'] = {'file': 'input/HOYA20150618.agf',
+                        'dir': 'output/hoya',
+                        'refs': '<a href=\\"http://refractiveindex.info/download/data/2015/HOYA20150618.agf\\">HOYA Zemax catalog 2015-06-18</a>'}
 
-agffiles.append('input/HIKARI.agf')
-ymldirs.append('output/hikari')
-refs.append('1) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI_Catalog.pdf\\">HIKARI optical glass catalog 2015-04-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI.agf\\">HIKARI Zemax catalog</a>')
 
-agffiles.append('input/HOYA20150618.agf')
-ymldirs.append('output/hoya')
-refs.append('<a href=\\"http://refractiveindex.info/download/data/2015/HOYA20150618.agf\\">HOYA Zemax catalog 2015-06-18</a>')
+agf_catalogs['sumita'] = {'file': 'input/sumita.agf', 
+                          'dir': 'output/sumita',
+                          'refs': '<a href=\"http://www.sumita-opt.co.jp/en/catalog.htm\">Sumita Optical Glass Data Book</a>'}
 
-"""
-agffiles.append('input/sumita.agf')
-ymldirs.append('output/sumita')
-refs.append('<a href=\"http://www.sumita-opt.co.jp/en/catalog.htm\">Sumita Optical Glass Data Book</a>')
-"""
 
 class GlassData:
     wl = None
@@ -101,9 +103,14 @@ def WriteYML(gd, ymldir, references):
     ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
     ymlfile.write('    coefficients:')
     if gd.formula == "1" or gd.formula == "13":
+        if gd.formula == "1":
+            coeff_list = [None, 2, -2, -4, -6, -8]
+        else:
+            coeff_list = [None, 2, 4, -2, -4, -6, -8, -10, -12]
+            
         n_coeffs = len(gd.disp_formula_coefficients)
         
-        for i, k in zip(range(n_coeffs), [None, 2, 4, -2, -4, -6, -8, -10, -12][:n_coeffs]):
+        for i, k in zip(range(n_coeffs), coeff_list[:n_coeffs]):
             if float(gd.disp_formula_coefficients[i]):
                 ymlfile.write(' {}'.format(float(gd.disp_formula_coefficients[i]), k))
                 if k != None:
@@ -242,9 +249,16 @@ def process(agf_file, out_dir, ref):
 
 ### main program
 if __name__ == "__main__":
-    for agffile, dir_, ref in zip(agffiles, ymldirs, refs):
-        # Make output dir
-        if not os.path.exists(dir_):
-            os.mkdir(dir_)
-        process(agffile, dir_, ref)
+    import sys
+    if len(sys.argv) < 2:
+        print("Usage: python {} <catalog name>".format(__file__))
+        print("Catalog name can be on of the following: ")
+        for name in agf_catalogs.keys():
+            print("{} ".format(name))
+        sys.exit(1)
+    catalog = agf_catalogs[sys.argv[1]]
+    # Make output dir
+    if not os.path.exists(catalog['dir']):
+        os.mkdir(catalog['dir'])
+    process(catalog['file'], catalog['dir'], catalog['refs'])
     
