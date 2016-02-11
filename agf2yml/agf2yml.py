@@ -14,23 +14,34 @@
 
 import os, math
 
-agffile = 'input/schottzemax-20150722.agf'
-ymldir = 'output/schott'
-references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/schott-optical-glass-collection-datasheets-july-2015-us.pdf\\">SCHOTT optical glass data sheets 2015-07-22</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/schottzemax-20150722.agf\\">SCHOTT Zemax catalog 2015-07-22</a>'
+agffiles = []
+ymldirs = []
+refs = []
 
-"""
-agffile = 'input/OHARA_151201.agf'
-ymldir = 'output/ohara'
-references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/ohara_2015-12-01.pdf\\">OHARA optical glass datasheets 2015-12-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/OHARA_151201.agf\\">OHARA Zemax catalog 2015-12-01</a>'
+agf_catalogs = {}
 
-agffile = 'input/HIKARI.agf'
-ymldir = 'output/hikari'
-references = '1) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI_Catalog.pdf\\">HIKARI optical glass catalog 2015-04-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI.agf\\">HIKARI Zemax catalog</a>'
+agf_catalogs['schott'] = {'file': 'input/schottzemax-20150722.agf',
+                          'dir': 'output/schott',
+                          'refs': '1) <a href=\\"http://refractiveindex.info/download/data/2015/schott-optical-glass-collection-datasheets-july-2015-us.pdf\\">SCHOTT optical glass data sheets 2015-07-22</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/schottzemax-20150722.agf\\">SCHOTT Zemax catalog 2015-07-22</a>'}
 
-agffile = 'input/HOYA20150618.agf'
-ymldir = 'output/hoya'
-references = '<a href=\\"http://refractiveindex.info/download/data/2015/HOYA20150618.agf\\">HOYA Zemax catalog 2015-06-18</a>'
-"""
+agf_catalogs['ohara'] = {'file': 'input/OHARA_151201.agf',
+                         'dir': 'output/ohara', 
+                         'refs': '1) <a href=\\"http://refractiveindex.info/download/data/2015/ohara_2015-12-01.pdf\\">OHARA optical glass datasheets 2015-12-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/OHARA_151201.agf\\">OHARA Zemax catalog 2015-12-01</a>'}
+
+agf_catalogs['hikari'] = {'file': 'input/HIKARI.agf',
+                          'dir': 'output/hikari',
+                          'refs': '1) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI_Catalog.pdf\\">HIKARI optical glass catalog 2015-04-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI.agf\\">HIKARI Zemax catalog</a>'}
+
+
+agf_catalogs['hoya'] = {'file': 'input/HOYA20150618.agf',
+                        'dir': 'output/hoya',
+                        'refs': '<a href=\\"http://refractiveindex.info/download/data/2015/HOYA20150618.agf\\">HOYA Zemax catalog 2015-06-18</a>'}
+
+
+agf_catalogs['sumita'] = {'file': 'input/sumita.agf', 
+                          'dir': 'output/sumita',
+                          'refs': '<a href=\"http://www.sumita-opt.co.jp/en/catalog.htm\">Sumita Optical Glass Data Book</a>'}
+
 
 class GlassData:
     wl = None
@@ -69,13 +80,7 @@ class GlassData:
         self.wl, self.IT, self.thickness = [],[],[]
 
 
-def WriteYML(gd): 
-    
-    if gd.glass_count == 1:
-        if not os.path.exists(ymldir):
-            print "Path %s doesn't exist" % ymldir
-            os.mkdir(ymldir)
-        
+def WriteYML(gd, ymldir, references): 
     print('{}: {}'.format(gd.glass_count, gd.name))
     yml_file_path = os.path.join(ymldir, gd.name)
     try:
@@ -98,9 +103,19 @@ def WriteYML(gd):
     ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
     ymlfile.write('    coefficients:')
     if gd.formula == "1" or gd.formula == "13":
-        for i, k in zip(range(8), ['', 2, 4, -2, -6, -8, -10, -12]):
+        if gd.formula == "1":
+            coeff_list = [None, 2, -2, -4, -6, -8]
+        else:
+            coeff_list = [None, 2, 4, -2, -4, -6, -8, -10, -12]
+            
+        n_coeffs = len(gd.disp_formula_coefficients)
+        
+        for i, k in zip(range(n_coeffs), coeff_list[:n_coeffs]):
             if float(gd.disp_formula_coefficients[i]):
-                ymlfile.write(' {} {}'.format(gd.disp_formula_coefficients[i], k))
+                ymlfile.write(' {}'.format(float(gd.disp_formula_coefficients[i]), k))
+                if k != None:
+                    ymlfile.write(' {}'.format(k))
+                    
     if gd.formula == "2":
         ymlfile.write(' 0')
         num_coeff = len(gd.disp_formula_coefficients) 
@@ -108,6 +123,7 @@ def WriteYML(gd):
             if num_coeff > i+1 and float(gd.disp_formula_coefficients[i]):
                 ymlfile.write(' {} {}'.format(float(gd.disp_formula_coefficients[i]),
                                               float(gd.disp_formula_coefficients[i+1])))
+                
     ymlfile.write('\n')
     
     ymlfile.write('  - type: tabulated k\n')
@@ -171,7 +187,7 @@ def WriteYML(gd):
     
     print('ok')
 
-def process(agf_file):
+def process(agf_file, out_dir, ref):
     gd = GlassData()
     with open(agf_file) as agf:
         for line in agf:
@@ -180,7 +196,7 @@ def process(agf_file):
                 continue
             if data[0] == 'NM':
                 if gd.glass_count!=0:
-                    WriteYML(gd)
+                    WriteYML(gd, out_dir, ref)
                     #sys.exit(0)
                 gd = GlassData()
                 gd.glass_count +=1
@@ -229,9 +245,20 @@ def process(agf_file):
             if data[0] == 'GC':
                 gd.comments = data[1:]
 
-        if gd.glass_count!=0: WriteYML(gd)
+        if gd.glass_count!=0: WriteYML(gd, out_dir, ref)
 
 ### main program
 if __name__ == "__main__":
-    process(agffile)
+    import sys
+    if len(sys.argv) < 2:
+        print("Usage: python {} <catalog name>".format(__file__))
+        print("Catalog name can be on of the following: ")
+        for name in agf_catalogs.keys():
+            print("{} ".format(name))
+        sys.exit(1)
+    catalog = agf_catalogs[sys.argv[1]]
+    # Make output dir
+    if not os.path.exists(catalog['dir']):
+        os.mkdir(catalog['dir'])
+    process(catalog['file'], catalog['dir'], catalog['refs'])
     
