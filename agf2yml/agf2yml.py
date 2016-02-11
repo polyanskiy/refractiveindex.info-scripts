@@ -41,7 +41,6 @@ agf_catalogs['sumita'] = {'file': 'input/sumita.agf',
                           'dir': 'output/sumita',
                           'refs': '<a href=\"http://www.sumita-opt.co.jp/en/catalog.htm\">Sumita Optical Glass Data Book</a>'}
 
-glass_count = 0
 
 class GlassData:
     wl = None
@@ -78,7 +77,7 @@ class GlassData:
         self.wl, self.IT, self.thickness = [],[],[]
 
 
-def WriteYML(gd, ymldir, references): 
+def WriteYML(gd, ymldir, references, glass_count): 
     print('{}: {}'.format(glass_count, gd.name))
     yml_file_path = os.path.join(ymldir, gd.name)
     try:
@@ -186,7 +185,7 @@ def WriteYML(gd, ymldir, references):
     print('ok')
 
 def process(agf_file, out_dir, ref):
-    global glass_count
+    glass_count = 0
     gd = GlassData()
     with open(agf_file) as agf:
         for line in agf:
@@ -195,10 +194,10 @@ def process(agf_file, out_dir, ref):
                 continue
             if data[0] == 'NM':
                 if glass_count!=0:
-                    WriteYML(gd, out_dir, ref)
+                    WriteYML(gd, out_dir, ref, glass_count)
                     #sys.exit(0)
-                gd = GlassData()
                 glass_count +=1
+                gd = GlassData()
                 gd.name = data[1]
                 
                 gd.formula = data[2]
@@ -244,7 +243,8 @@ def process(agf_file, out_dir, ref):
             if data[0] == 'GC':
                 gd.comments = data[1:]
 
-        if glass_count!=0: WriteYML(gd, out_dir, ref)
+        if glass_count!=0:
+            WriteYML(gd, out_dir, ref, glass_count)
 
 ### main program
 if __name__ == "__main__":
