@@ -8,7 +8,6 @@
 #                 agf2yml (Zemax to refractiveindex.info converter)                       #
 
 #-----------------------------------------------------------------------------------------#
-#  author: Mikhail Polyanskiy (polyanskiy@refractiveindex.info)                           #
 #  dependencies: Python3, NumPy                                                           #
 #-----------------------------------------------------------------------------------------#
 
@@ -42,13 +41,12 @@ agf_catalogs['sumita'] = {'file': 'input/sumita.agf',
                           'dir': 'output/sumita',
                           'refs': '<a href=\"http://www.sumita-opt.co.jp/en/catalog.htm\">Sumita Optical Glass Data Book</a>'}
 
+glass_count = 0
 
 class GlassData:
     wl = None
     IT = None
     thickness = None
-
-    glass_count = 0
     
     name = ''
     comments = ''
@@ -81,7 +79,7 @@ class GlassData:
 
 
 def WriteYML(gd, ymldir, references): 
-    print('{}: {}'.format(gd.glass_count, gd.name))
+    print('{}: {}'.format(glass_count, gd.name))
     yml_file_path = os.path.join(ymldir, gd.name)
     try:
         ymlfile = open('{}.yml'.format(yml_file_path), 'w+', encoding='utf-8')
@@ -188,6 +186,7 @@ def WriteYML(gd, ymldir, references):
     print('ok')
 
 def process(agf_file, out_dir, ref):
+    global glass_count
     gd = GlassData()
     with open(agf_file) as agf:
         for line in agf:
@@ -195,11 +194,11 @@ def process(agf_file, out_dir, ref):
             if not len(data):
                 continue
             if data[0] == 'NM':
-                if gd.glass_count!=0:
+                if glass_count!=0:
                     WriteYML(gd, out_dir, ref)
                     #sys.exit(0)
                 gd = GlassData()
-                gd.glass_count +=1
+                glass_count +=1
                 gd.name = data[1]
                 
                 gd.formula = data[2]
@@ -245,7 +244,7 @@ def process(agf_file, out_dir, ref):
             if data[0] == 'GC':
                 gd.comments = data[1:]
 
-        if gd.glass_count!=0: WriteYML(gd, out_dir, ref)
+        if glass_count!=0: WriteYML(gd, out_dir, ref)
 
 ### main program
 if __name__ == "__main__":
