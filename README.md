@@ -1,5 +1,5 @@
 # refractiveindex.info-scripts
-Python scripts related to refractiveindex.info database
+Collection of Python scripts related to refractiveindex.info database
 
 ## check_db
 Checks the integrity of the `refractiveindex.info database`
@@ -10,13 +10,17 @@ Converts ZEMAX `.agf` glass catalog format into `YAML` format used by the refrac
 ## ldbb
 Calculates optical constants of several metals
 
-# More scripts
-Other projects interfacing with the `refractiveindex.info database`
+# Other projects related to refractiveindex.info dtabase
 
 ## PyTMM
 https://github.com/kitchenknif/PyTMM
 
 Database browser and Transfer Matrix Method implementation (by Pavel Dmitriev)
+
+## refractiveindex.info-sqlite
+https://github.com/HugoGuillen/refractiveindex.info-sqlite
+
+Python 3 + SQLite wrapper for the refractiveindex.info database (by Hugo Guillen)
 
 ## refractiveindex.info (another scripts project)
 https://github.com/cinek810/refractiveindex.info
