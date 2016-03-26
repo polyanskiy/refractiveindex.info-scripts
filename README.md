@@ -22,7 +22,7 @@ https://github.com/HugoGuillen/refractiveindex.info-sqlite
 
 Python 3 + SQLite wrapper for the refractiveindex.info database (by Hugo Guillen)
 
-## refractiveindex.info (another scripts project)
+## refractiveindex.info
 https://github.com/cinek810/refractiveindex.info
 
 Support for operations not possible through the web interface, e.g. find materials with refractive index within a specified range (by Marcin Stolarek)
