@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #Original data: https://doi.org/10.1063/1.345115
 #Author: Mikhail Polyanskiy
-#Last modified: 2017-01-15
+#Last modified: 2017-01-16
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 E0  = 2.69    #eV
 Δ0  = 3.10-E0 #eV
 G0  = 0.017   #eV
-A   = 23.4    #eV^1.5
+A   = 23.4    #eV**1.5
 A0x = 0.03    #eV
 Γ0  = 0.030   #eV
 
@@ -117,7 +117,6 @@ plt.plot(μm, n, label="n")
 plt.plot(μm, k, label="k")
 plt.xlabel('Wavelength (μm)')
 plt.ylabel('n, k')
-#plt.xscale('log')
 plt.yscale('log')
 plt.legend(bbox_to_anchor=(0,1.02,1,0),loc=3,ncol=2,borderaxespad=0)
 

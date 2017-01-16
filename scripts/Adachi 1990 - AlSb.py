@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 # parameters from table I
 E0   = 2.27    #eV
 Δ0   = 2.9-E0  #eV
-A    = 29.0    #eV^1.5
+A    = 29.0    #eV**1.5
 Γ0   = 0.015   #eV
 
 E1   = 2.84    #eV
