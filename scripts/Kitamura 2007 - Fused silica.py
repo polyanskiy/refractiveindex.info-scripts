@@ -15,12 +15,12 @@ import matplotlib.pyplot as plt
 
 
 def D(x):
-    nsteps = 10000
+    nsteps = 100000
     tmp = 0
     for i in range(0, nsteps):
         t = x/nsteps*(i+.5)
         tmp += np.exp(t**2-x**2) * x/nsteps
-    return tmp
+    return tmp*2 # attn: factor of "2" added in order to reproduce the reported results !!!
 
 def M(η):  
      ε = εinf
@@ -57,24 +57,37 @@ plt.xlabel('Wavenumber (1/cm)')
 plt.ylabel('ε')
 plt.legend(bbox_to_anchor=(0,1.02,1,0),loc=3,ncol=2,borderaxespad=0)
 
-#plot n,k vs wavenumber
+#plot n vs wavelength (Fig. 3 top in the paper)
 plt.figure(2)
-plt.plot(η, n, label="n")
-plt.plot(η, k, label="k")
-plt.xlabel('Wavenumber (1/cm)')
-plt.ylabel('n, k')
-plt.yscale('log')
-plt.legend(bbox_to_anchor=(0,1.02,1,0),loc=3,ncol=2,borderaxespad=0)
-
-#plot n vs wavelength
-plt.figure(3)
 plt.plot(λ, n, label="n")
 plt.xlabel('Wavelength (μm)')
 plt.ylabel('n')
+plt.xlim([1,15])
+plt.ylim([0,4])
 
-#plot k vs wavelength
-plt.figure(4)
+#plot k vs wavelength  (Fig. 3 bottom in the paper)
+plt.figure(3)
 plt.plot(λ, k, label="k")
 plt.xlabel('Wavelength (μm)')
 plt.ylabel('k')
 plt.yscale('log')
+plt.xlim([1,15])
+plt.ylim([1e-8 ,10])
+
+#plot n vs wavelength (Fig. 4 top in the paper)
+plt.figure(4)
+plt.plot(λ, n, label="n")
+plt.xlabel('Wavelength (μm)')
+plt.ylabel('n')
+plt.xlim([15,100])
+plt.ylim([0,3])
+
+
+#plot k vs wavelength (Fig. 4 bottom in the paper)
+plt.figure(5)
+plt.plot(λ, k, label="k")
+plt.xlabel('Wavelength (μm)')
+plt.ylabel('k')
+plt.yscale('log')
+plt.xlim([15,100])
+plt.ylim([1e-2 ,10])
