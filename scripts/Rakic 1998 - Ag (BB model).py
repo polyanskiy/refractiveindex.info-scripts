@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Original data: https://doi.org/10.1364/AO.37.005271
 # Author: Mikhail Polyanskiy
-# Last modified: 2017-01-16
+# Last modified: 2017-02-22
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -71,9 +71,9 @@ def BB(ω):  #ω: eV
     return ε
   
 ev_min=0.1
-ev_max=6
+ev_max=5
 npoints=200
-eV = np.linspace(ev_min, ev_max, npoints)
+eV = np.logspace(np.log10(ev_min), np.log10(ev_max), npoints)
 μm = 4.13566733e-1*2.99792458/eV
 ε = BB(eV)
 n = (ε**.5).real
@@ -97,7 +97,6 @@ plt.xlabel('Photon energy (eV)')
 plt.ylabel('ε')
 plt.xscale('log')
 plt.yscale('log')
-plt.xlim([0.2,5])
 plt.legend(bbox_to_anchor=(0,1.02,1,0),loc=3,ncol=2,borderaxespad=0)
 
 #plot n,k vs eV

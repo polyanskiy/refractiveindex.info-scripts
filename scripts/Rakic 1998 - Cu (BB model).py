@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Original data: https://doi.org/10.1364/AO.37.005271
 # Author: Mikhail Polyanskiy
-# Last modified: 2017-01-16
+# Last modified: 2017-02-22
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,7 +9,7 @@ from scipy.special import wofz as w
 π = np.pi
 
 # Brendel-Bormann (BB) model parameters
-ωp = 10.83  #eV
+ωp = 10.83 #eV
 f0 = 0.562
 Γ0 = 0.030 #eV
 
@@ -63,7 +63,7 @@ def BB(ω):  #ω: eV
 ev_min=0.1
 ev_max=6
 npoints=200
-eV = np.linspace(ev_min, ev_max, npoints)
+eV = np.logspace(np.log10(ev_min), np.log10(ev_max), npoints)
 μm = 4.13566733e-1*2.99792458/eV
 ε = BB(eV)
 n = (ε**.5).real
@@ -81,13 +81,12 @@ file.close()
 plt.rc('font', family='Arial', size='14')
 
 plt.figure(1)
-plt.plot(eV, -ε.real, label="ε1")
+plt.plot(eV, -ε.real, label="-ε1")
 plt.plot(eV, ε.imag, label="ε2")
 plt.xlabel('Photon energy (eV)')
 plt.ylabel('ε')
 plt.xscale('log')
 plt.yscale('log')
-plt.xlim([0.2,5])
 plt.legend(bbox_to_anchor=(0,1.02,1,0),loc=3,ncol=2,borderaxespad=0)
 
 #plot n,k vs eV
