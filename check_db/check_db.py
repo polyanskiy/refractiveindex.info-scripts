@@ -27,7 +27,7 @@ if __name__ == "__main__":
     lib_path = os.path.join(db_path, db_yml)
 
     ## List all YML files to process, recursively. Omit library.yml.
-    yaml_files = [os.path.join(dirpath, f)
+    yaml_files = [os.path.normpath(os.path.join(dirpath, f))
                   for dirpath, dirnames, files in os.walk(db_path)
                   for f in fnmatch.filter(files, '*.yml') if f != 'library.yml'
                  ]
