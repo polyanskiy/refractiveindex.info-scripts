@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# Original data: https://doi.org/10.1364/AO.37.005271
 # Author: Mikhail Polyanskiy
-# Last modified: 2017-02-22
+# Last modified: 2017-04-02
+# Original data: Rakić et al. 1998, https://doi.org/10.1364/AO.37.005271
 
 import numpy as np
 import matplotlib.pyplot as plt
