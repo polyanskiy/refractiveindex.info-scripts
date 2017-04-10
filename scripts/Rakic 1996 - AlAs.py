@@ -1,43 +1,43 @@
 # -*- coding: utf-8 -*-
 # Author: Mikhail Polyanskiy
-# Last modified: 2017-04-09
+# Last modified: 2017-04-10
 # Original data: Rakić and Majewski 1996, https://doi.org/10.1063/1.363586
 
 import numpy as np
 import matplotlib.pyplot as plt
 
 # model parameters
-E0   = 1.410   #eV
-Δ0   = 1.746-E0#eV
-E1   = 2.926   #eV
-Δ1   = 3.170-E1#eV
+E0   = 2.993   #eV
+Δ0   = 3.201-E0#eV
+E1   = 3.888   #eV
+Δ1   = 4.087-E1#eV
 
-εinf = 0.77
+εinf = 0.002
 
-A    = 3.97    #eV**1.5
-Γ0   = 0.039   #eV
-α0   = 1.65
+A    = 18.0    #eV**1.5
+Γ0   = 0.046   #eV
+α0   = 1.11
 
-B1   = 4.15
-B1s  = 1.54
-B1x  = 1.39
-B2x  = 0.56
-Γ1   = 0.15    #eV
+B1   = 3.50
+B1s  = 0.11
+B1x  = 0.69
+B2x  = 0.82
+Γ1   = 0.11    #eV
 α1   = 0.01
 
-f0pr = 3.89    #eV (not eV**2!!!)
-Γ0pr = 0.55    #eV
-E0pr = 4.49    #eV
+f0pr = 2.78    #eV (not eV**2!!!)
+Γ0pr = 0.35    #eV
+E0pr = 4.64    #eV
 
-f2x  = 6.05    #eV (not eV**2!!!)
-Γ2x  = 0.68    #eV
-E2x  = 4.74    #eV
+f2x  = 2.88    #eV (not eV**2!!!)
+Γ2x  = 0.53    #eV
+E2x  = 4.73    #eV
 
-f2Σ  = 2.62    #eV (not eV**2!!!)
-Γ2Σ  = 0.26    #eV
-E2Σ  = 4.88    #eV
+f2Σ  = 7.04    #eV (not eV**2!!!)
+Γ2Σ  = 0.65    #eV
+E2Σ  = 4.89    #eV
 
-α2   = 0.060
+α2   = 0.27
 
 
 def Epsilon_I(ħω):
@@ -71,8 +71,8 @@ def Epsilon_IV(ħω):
     return εinf + ε0pr + ε2x + ε2Σ
 
 
-ev_min=0.1
-ev_max=6
+ev_min=0.5
+ev_max=5.6
 npoints=200
 eV = np.linspace(ev_min, ev_max, npoints)
 μm = 4.13566733e-1*2.99792458/eV
