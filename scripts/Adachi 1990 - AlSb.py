@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Author: Mikhail Polyanskiy
-# Last modified: 2017-04-02
+# Last modified: 2017-04-09
 # Original data: Adachi 1990, https://doi.org/10.1063/1.345115
 
 import numpy as np
@@ -71,11 +71,12 @@ def Epsilon_D(ħω):
     + 0.5*(1+Eg/(ħω+1j*Γg))**2*np.log((ħω+1j*Γg+Ec)/(ħω+1j*Γg+Eg))
     + 0.5*(1-Eg/(ħω+1j*Γg))**2*np.log((ħω+1j*Γg-Ec)/(ħω+1j*Γg-Eg)) )
     
-    
+
 
 ev_min=0.1
 ev_max=6
-npoints=200
+npoints=500
+
 eV = np.linspace(ev_min, ev_max, npoints)
 μm = 4.13566733e-1*2.99792458/eV
 εA  = Epsilon_A(eV)

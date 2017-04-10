@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Author: Mikhail Polyanskiy
-# Last modified: 2017-04-02
+# Last modified: 2017-04-09
 # Original data: Adachi and Taguchi 1991, https://doi.org/10.1103/PhysRevB.43.9569
 
 import numpy as np
@@ -36,14 +36,14 @@ def Epsilon_A(ħω):
 
 def Epsilon_Ax(ħω):
     y=0
-    for n in range(1,100):
-       y += A0x/n**3 * ( 1/((E0-G0)/n**2-ħω-1j*Γ0) + 0.5/(((E0+Δ0)-G0)/n**2-ħω-1j*Γ0) )
+    for n in range(1,1000):
+       y += A0x/n**3 * ( 1/(E0-G0/n**2-ħω-1j*Γ0) + 0.5/(E0+Δ0-G0/n**2-ħω-1j*Γ0) )
     return y
 
 def Epsilon_Bx(ħω):
     y=0
-    for n in range(1,100):
-       y += 1/(2*n-1)**3 * (B1x/(E1/(2*n-1)**2-ħω-1j*Γ1) + B2x/((E1+Δ1)/(2*n-1)**2-ħω-1j*Γ1) )
+    for n in range(1,1000):
+       y += 1/(2*n-1)**3 * ( B1x/(E1-ħω-1j*Γ1) + B2x/(E1+Δ1-ħω-1j*Γ1) )
     return y
 
 def Epsilon_C(ħω):
@@ -52,7 +52,7 @@ def Epsilon_C(ħω):
 
 ev_min=1.5
 ev_max=5.3
-npoints=1000
+npoints=500
 
 eV = np.linspace(ev_min, ev_max, npoints)
 μm = 4.13566733e-1*2.99792458/eV

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Author: Mikhail Polyanskiy
-# Last modified: 2017-04-02
+# Last modified: 2017-04-09
 # Original data: Djurišić et al. 2000, https://doi.org/10.1007/s003390050006
 
 import numpy as np
@@ -64,7 +64,7 @@ def Epsilon_III(ħω):
 
 ev_min=1
 ev_max=6
-npoints=200
+npoints=500
 eV = np.linspace(ev_min, ev_max, npoints)
 μm = 4.13566733e-1*2.99792458/eV
 ε = εinf + Epsilon_I(eV) + Epsilon_II(eV) + Epsilon_III(eV)

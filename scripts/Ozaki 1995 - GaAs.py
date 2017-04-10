@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Author: Mikhail Polyanskiy
-# Last modified: 2017-04-08
+# Last modified: 2017-04-09
 # Original data: Ozaki and Adachi 1995, https://doi.org/10.1063/1.359966
 
 import numpy as np
@@ -52,8 +52,8 @@ def Epsilon_B(ħω):
 
 def Epsilon_Bx(ħω):
     y=0
-    for n in range(1,100):
-       y += 1/(2*n-1)**3 * (B1x/(E1/(2*n-1)**2-ħω-1j*Γ1) + B2x/((E1+Δ1)/(2*n-1)**2-ħω-1j*Γ1) )
+    for n in range(1,1000):
+       y += 1/(2*n-1)**3 * ( B1x/(E1-ħω-1j*Γ1) + B2x/(E1+Δ1-ħω-1j*Γ1) )
     return y
 
 def Epsilon_C0pr(ħω):
@@ -71,7 +71,7 @@ def Epsilon_C22(ħω):
 
 ev_min = 1.2
 ev_max = 5.6
-npoints = 200
+npoints = 500
 eV = np.linspace(ev_min, ev_max, npoints)
 μm = 4.13566733e-1*2.99792458/eV
 εA    = Epsilon_A(eV)
