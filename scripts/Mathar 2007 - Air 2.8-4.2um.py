@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Author: Mikhail Polyanskiy
-# Last modified: 2017-11-13
+# Last modified: 2017-11-15
 # Original data: Mathar 2007, https://doi.org/10.1088/1464-4258/9/5/008
 
 ############################### 2.8-4.2 μm ####################################
@@ -25,13 +25,13 @@ cpp  = [ 0.608860e-17, 0.461560e-22,  0.184282e-24, -0.524471e-27, -0.121299e-29
 cTH  = [ 0.517962e-4, -0.112149e-7,   0.776507e-11,  0.172569e-13, -0.320582e-16, -0.899435e-19] # cm^j · K · %^-1
 cTp  = [ 0.778638e-6,  0.446396e-12,  0.784600e-15, -0.195151e-17, -0.542083e-20,  0.103530e-22] # cm^j · K · Pa^-1
 cHp  = [-0.217243e-15, 0.104747e-20, -0.523689e-23,  0.817386e-26,  0.309913e-28, -0.363491e-31] # cm^j · %^-1 · Pa^-1
-
 σref = 1e4/3.4     # cm^−1
 Tref = 273.15+17.5 # K
 pref = 75000       # Pa
 Href = 10          #%
 
-def model(λ):
+# model
+def n(λ):
     σ = 1e4/λ # cm^-1
     n = 1
     for j in range(0, 6):
@@ -42,22 +42,23 @@ def model(λ):
             + cTp[j]*(1/T-1/Tref)*(p-pref)
             + cHp[j]*(H-Href)*(p-pref) ) * (σ-σref)**j   
     return n 
+
+
+# output - modify code below the line to match your needs
+###############################################################################
     
 λ = np.arange(2.8, 4.2, 0.01)
-n = model(λ)
+n = n(λ)
 
-#============================   DATA OUTPUT   =================================
+# write data file
 file = open('out.txt', 'w')
 for i in range(0, len(λ)):
     file.write('\n        {:.2f} {:.12f}'.format(λ[i],n[i]))
 file.close()
     
-    
-#===============================   PLOT   =====================================
+#plot n vs μm
 plt.rc('font', family='Arial', size='14')
-
-#plot ε1 vs eV
-plt.figure(1)
+plt.figure()
 plt.plot(λ, n-1)
 plt.xlabel('Wavelength (μm)')
 plt.ylabel('n-1')
