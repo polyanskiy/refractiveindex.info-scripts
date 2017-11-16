@@ -20,11 +20,10 @@ if __name__ == "__main__":
                                      help='database root directory (database/)')
     args = parser.parse_args()
     
-    
-    db_yml = "library.yml"
-    
     db_path = args.database
-    lib_path = os.path.join(db_path, db_yml)
+    db_yml = "library.yml"
+    lib_xml_root_path = os.path.sep.join([k for k in db_path.split(os.path.sep) if k!=''][:-1])
+    lib_path = os.path.sep.join([lib_xml_root_path, db_yml])
 
     ## List all YML files to process, recursively. Omit library.yml.
     yaml_files = [os.path.normpath(os.path.join(dirpath, f))
