@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Author: Mikhail Polyanskiy
 # Last modified: 2017-11-23
-# Original data: Ciddor 1997, https://doi.org/10.1364/AO.35.001566
+# Original data: Ciddor 1996, https://doi.org/10.1364/AO.35.001566
 
 ###############################################################################
 
