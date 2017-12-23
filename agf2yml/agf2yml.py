@@ -1,15 +1,15 @@
 #!/usr/bin/python
 # coding: utf-8
-###########################################################################################
-#         THIS PROGRAM IS IN PUBLIC DOMAIN                                                #
-#         COPYRIGHT AND RELATED RIGHTS WAIVED VIA CC0 1.0                                 #
-###########################################################################################
+###############################################################################
+#         THIS PROGRAM IS IN PUBLIC DOMAIN                                    #
+#         COPYRIGHT AND RELATED RIGHTS WAIVED VIA CC0 1.0                     #
+###############################################################################
 
-#                 agf2yml (Zemax to refractiveindex.info converter)                       #
+#             agf2yml (Zemax to refractiveindex.info converter)
 
-#-----------------------------------------------------------------------------------------#
-#  dependencies: Python3, NumPy                                                           #
-#-----------------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------
+#  dependencies: Python3, NumPy
+#------------------------------------------------------------------------------
 
 import os, math
 
@@ -31,16 +31,17 @@ agf_catalogs['hikari'] = {'file': 'input/HIKARI.agf',
                           'dir': 'output/hikari',
                           'refs': '1) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI_Catalog.pdf\\">HIKARI optical glass catalog 2015-04-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI.agf\\">HIKARI Zemax catalog</a>'}
 
-
 agf_catalogs['hoya'] = {'file': 'input/HOYA20150618.agf',
                         'dir': 'output/hoya',
                         'refs': '<a href=\\"http://refractiveindex.info/download/data/2015/HOYA20150618.agf\\">HOYA Zemax catalog 2015-06-18</a>'}
-
 
 agf_catalogs['sumita'] = {'file': 'input/sumita.agf', 
                           'dir': 'output/sumita',
                           'refs': '<a href=\"http://www.sumita-opt.co.jp/en/catalog.htm\">Sumita Optical Glass Data Book</a>'}
 
+agf_catalogs['cdgm'] = {'file': 'input/CDGM-ZEMAX201709.agf', 
+                          'dir': 'output/cdgm',
+                          'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/CDGM-ZEMAX201709.agf\\">CDGM Zemax catalog 2017-09</a>'}
 
 class GlassData:
     wl = None
@@ -79,7 +80,7 @@ class GlassData:
 
 def WriteYML(gd, ymldir, references, glass_count): 
     print('{}: {}'.format(glass_count, gd.name))
-    yml_file_path = os.path.join(ymldir, gd.name)
+    yml_file_path = os.path.join(ymldir, gd.name.replace('*','star'))
     try:
         ymlfile = open('{}.yml'.format(yml_file_path), 'w+', encoding='utf-8')
     except TypeError: # Python2 has no encoding= argument
@@ -93,33 +94,40 @@ def WriteYML(gd, ymldir, references, glass_count):
     
     ymlfile.write('DATA:\n')
 
-    if gd.formula == "1" or gd.formula == "13":
+    if gd.formula == "1":
         ymlfile.write('  - type: formula 3 \n')
-    if gd.formula == "2":
-        ymlfile.write('  - type: formula 2 \n')
-    ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
-    ymlfile.write('    coefficients:')
-    if gd.formula == "1" or gd.formula == "13":
-        if gd.formula == "1":
-            coeff_list = [None, 2, -2, -4, -6, -8]
-        else:
-            coeff_list = [None, 2, 4, -2, -4, -6, -8, -10, -12]
-            
+        ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
+        ymlfile.write('    coefficients:')
+        coeff_list = [None, 2, -2, -4, -6, -8]
         n_coeffs = len(gd.disp_formula_coefficients)
-        
         for i, k in zip(range(n_coeffs), coeff_list[:n_coeffs]):
             if float(gd.disp_formula_coefficients[i]):
                 ymlfile.write(' {}'.format(float(gd.disp_formula_coefficients[i]), k))
                 if k != None:
                     ymlfile.write(' {}'.format(k))
                     
-    if gd.formula == "2":
+    elif gd.formula == "2":
+        ymlfile.write('  - type: formula 2 \n')
+        ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
+        ymlfile.write('    coefficients:')
         ymlfile.write(' 0')
-        num_coeff = len(gd.disp_formula_coefficients) 
+        n_coeff = len(gd.disp_formula_coefficients) 
         for i in range(0, 16, 2):
-            if num_coeff > i+1 and float(gd.disp_formula_coefficients[i]):
+            if n_coeff > i+1 and float(gd.disp_formula_coefficients[i]):
                 ymlfile.write(' {} {}'.format(float(gd.disp_formula_coefficients[i]),
                                               float(gd.disp_formula_coefficients[i+1])))
+                
+    elif gd.formula == "13":
+        ymlfile.write('  - type: formula 3 \n')
+        ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
+        ymlfile.write('    coefficients:')
+        coeff_list = [None, 2, 4, -2, -4, -6, -8, -10, -12]
+        n_coeffs = len(gd.disp_formula_coefficients)
+        for i, k in zip(range(n_coeffs), coeff_list[:n_coeffs]):
+            if float(gd.disp_formula_coefficients[i]):
+                ymlfile.write(' {}'.format(float(gd.disp_formula_coefficients[i]), k))
+                if k != None:
+                    ymlfile.write(' {}'.format(k))
                 
     ymlfile.write('\n')
     
