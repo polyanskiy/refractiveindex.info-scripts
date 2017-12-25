@@ -106,7 +106,7 @@ def WriteYML(gd, ymldir, references, glass_count):
                 if k != None:
                     ymlfile.write(' {}'.format(k))
                     
-    elif gd.formula == "2":
+    elif gd.formula == "2" or "3":
         ymlfile.write('  - type: formula 2 \n')
         ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
         ymlfile.write('    coefficients:')
@@ -117,6 +117,18 @@ def WriteYML(gd, ymldir, references, glass_count):
                 ymlfile.write(' {} {}'.format(float(gd.disp_formula_coefficients[i]),
                                               float(gd.disp_formula_coefficients[i+1])))
                 
+#    if gd.formula == "3":
+#        ymlfile.write('  - type: formula 4 \n')
+#        ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
+#        ymlfile.write('    coefficients:')
+#        n_coeffs = len(gd.disp_formula_coefficients)
+#        ymlfile.write(' {} {} 2 {} 2 {} 0 {} 2'.format(float(gd.disp_formula_coefficients[0])+1,
+#                                                       float(gd.disp_formula_coefficients[1]),
+#                                                       float(gd.disp_formula_coefficients[2]),
+#                                                       float(gd.disp_formula_coefficients[3]),
+#                                                       float(gd.disp_formula_coefficients[4])))
+#                    
+#                
     elif gd.formula == "13":
         ymlfile.write('  - type: formula 3 \n')
         ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
@@ -139,7 +151,7 @@ def WriteYML(gd, ymldir, references, glass_count):
                 math.log(float(gd.IT[i])) / (float(gd.thickness[i])*1000)
             ymlfile.write('        {:.3f} {:.4E}\n'.format(float(gd.wl[i]), k))
     
-    ymlfile.write('INFO:\n')
+    ymlfile.write('SPECS:\n')
     ymlfile.write('    n_is_absolute: false\n')
     ymlfile.write('    λ_is_vacuum: false\n')
     if len(gd.thermal_disp_coefficients) > 6:
