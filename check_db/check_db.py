@@ -22,8 +22,9 @@ if __name__ == "__main__":
     
     db_path = args.database
     db_yml = "library.yml"
-    lib_xml_root_path = os.path.sep.join([k for k in db_path.split(os.path.sep) if k!=''][:-1])
-    lib_path = os.path.sep.join([lib_xml_root_path, db_yml])
+    lib_path = os.path.join(db_path, db_yml)
+#    lib_xml_root_path = os.path.sep.join([k for k in db_path.split(os.path.sep) if k!=''][:-1])
+#    lib_path = os.path.sep.join([lib_xml_root_path, db_yml])
 
     ## List all YML files to process, recursively. Omit library.yml.
     yaml_files = [os.path.normpath(os.path.join(dirpath, f))
@@ -64,7 +65,7 @@ if __name__ == "__main__":
                     else:
                         page_auth = page["PAGE"]
                         page_name = page["name"]
-                        page_path = os.path.normpath(os.path.join(db_path, page["data"]))
+                        page_path = os.path.normpath(os.path.join(db_path, 'data', page["data"]))
                         ct[-1]["content"][divider][-1]["book_page"][subpage] \
                             .append({
                                 "page_auth":page_auth,
@@ -110,3 +111,13 @@ if __name__ == "__main__":
         print("Some files of the index are not on disk :")
         for ff in unique_files_index.difference(unique_files):
             print(ff)
+    
+#    print("")
+#    print("yaml files:")
+#    for ff in yaml_files:
+#        print(ff)
+#    
+#    print("")
+#    print("library.yml:")
+#    for ff in indexed_files:
+#        print(ff)
