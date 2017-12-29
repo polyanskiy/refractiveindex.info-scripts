@@ -19,29 +19,29 @@ refs = []
 
 agf_catalogs = {}
 
-agf_catalogs['schott'] = {'file': 'input/schottzemax-20150722.agf',
+agf_catalogs['schott'] = {'file': 'input/schott_2015-07-22.agf',
                           'dir': 'output/schott',
                           'refs': '1) <a href=\\"http://refractiveindex.info/download/data/2015/schott-optical-glass-collection-datasheets-july-2015-us.pdf\\">SCHOTT optical glass data sheets 2015-07-22</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/schottzemax-20150722.agf\\">SCHOTT Zemax catalog 2015-07-22</a>'}
 
-agf_catalogs['ohara'] = {'file': 'input/OHARA_151201.agf',
+agf_catalogs['ohara'] = {'file': 'input/ohara_2015-12-01.agf',
                          'dir': 'output/ohara', 
                          'refs': '1) <a href=\\"http://refractiveindex.info/download/data/2015/ohara_2015-12-01.pdf\\">OHARA optical glass datasheets 2015-12-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/OHARA_151201.agf\\">OHARA Zemax catalog 2015-12-01</a>'}
 
-agf_catalogs['hikari'] = {'file': 'input/HIKARI.agf',
+agf_catalogs['hikari'] = {'file': 'input/hikari_2015.agf',
                           'dir': 'output/hikari',
                           'refs': '1) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI_Catalog.pdf\\">HIKARI optical glass catalog 2015-04-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI.agf\\">HIKARI Zemax catalog</a>'}
 
-agf_catalogs['hoya'] = {'file': 'input/HOYA20150618.agf',
+agf_catalogs['hoya'] = {'file': 'input/hoya_2015-06-18.agf',
                         'dir': 'output/hoya',
                         'refs': '<a href=\\"http://refractiveindex.info/download/data/2015/HOYA20150618.agf\\">HOYA Zemax catalog 2015-06-18</a>'}
 
-agf_catalogs['sumita'] = {'file': 'input/sumita.agf', 
+agf_catalogs['sumita'] = {'file': 'input/sumita_2017-02-02.agf', 
                           'dir': 'output/sumita',
-                          'refs': '<a href=\"http://www.sumita-opt.co.jp/en/catalog.htm\">Sumita Optical Glass Data Book</a>'}
+                          'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/sumita_2017-02-02.agf\\">SUMITA Zemax catalog 2017-02-02</a> (obtained from <a href=\\"http://www.sumita-opt.co.jp/en/download/\\">http://www.sumita-opt.co.jp</a>)'}
 
-agf_catalogs['cdgm'] = {'file': 'input/CDGM-ZEMAX201709.agf', 
+agf_catalogs['cdgm'] = {'file': 'input/cdgm_2017-09.agf', 
                           'dir': 'output/cdgm',
-                          'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/CDGM-ZEMAX201709.agf\\">CDGM Zemax catalog 2017-09</a>'}
+                          'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/cdgm_2017-09.agf\\">CDGM Zemax catalog 2017-09</a> (obtained from <a href=\\"http://www.cdgmgd.com/208/\\">http://www.cdgmgd.com</a>)'}
 
 class GlassData:
     wl = None
