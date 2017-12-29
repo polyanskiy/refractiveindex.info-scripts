@@ -31,9 +31,9 @@ agf_catalogs['hikari'] = {'file': 'input/hikari_2015.agf',
                           'dir': 'output/hikari',
                           'refs': '1) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI_Catalog.pdf\\">HIKARI optical glass catalog 2015-04-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI.agf\\">HIKARI Zemax catalog</a>'}
 
-agf_catalogs['hoya'] = {'file': 'input/hoya_2015-06-18.agf',
+agf_catalogs['hoya'] = {'file': 'input/hoya_2017-04-01.agf',
                         'dir': 'output/hoya',
-                        'refs': '<a href=\\"http://refractiveindex.info/download/data/2015/HOYA20150618.agf\\">HOYA Zemax catalog 2015-06-18</a>'}
+                        'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/hoya_2017-04-01.agf\\">HOYA Zemax catalog 2017-04-01</a> (obtained from <a href=\\"http://www.hoya-opticalworld.com/english/datadownload/\\">http://www.hoya-opticalworld.com</a>)'}
 
 agf_catalogs['sumita'] = {'file': 'input/sumita_2017-02-02.agf', 
                           'dir': 'output/sumita',
