@@ -26,7 +26,7 @@ agf_catalogs = {}
 
 agf_catalogs['schott'] = {'file': 'input/schott_2017-01-20b.agf',
                           'dir': 'output/schott',
-                          'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/schott_2017-01-20b.agf\\">SCHOTT Zemax catalog 2017-01-20b</a> (obtained from <a href=\\"http://www.schott.com/advanced_optics/english/download/\\">http://www.schott.com</a>)<br>See also <a href=\\"http://refractiveindex.info/download/data/2017/schott-optical-glass-collection-datasheets-english-us-17012017.pdf\\">SCHOTT glass data sheets</a>'}
+                          'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/schott_2017-01-20b.agf\\">SCHOTT Zemax catalog 2017-01-20b</a> (obtained from <a href=\\"http://www.schott.com/advanced_optics/english/download/\\">http://www.schott.com</a>)<br>See also <a href=\\"http://refractiveindex.info/download/data/2017/schott_2017-01-20.pdf\\">SCHOTT glass data sheets</a>'}
 
 agf_catalogs['ohara'] = {'file': 'input/ohara_2017-11-30.agf',
                          'dir': 'output/ohara', 
@@ -42,7 +42,7 @@ agf_catalogs['hoya'] = {'file': 'input/hoya_2017-04-01.agf',
 
 agf_catalogs['sumita'] = {'file': 'input/sumita_2017-02-02.agf', 
                           'dir': 'output/sumita',
-                          'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/sumita_2017-02-02.agf\\">SUMITA Zemax catalog 2017-02-02</a> (obtained from <a href=\\"http://www.sumita-opt.co.jp/en/download/\\">http://www.sumita-opt.co.jp</a>)'}
+                          'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/sumita_2017-02-02.agf\\">SUMITA Zemax catalog 2017-02-02</a> (obtained from <a href=\\"http://www.sumita-opt.co.jp/en/download/\\">http://www.sumita-opt.co.jp</a>)<br>See also <a href=\\"http://refractiveindex.info/download/data/2016/sumita_2016-02-01.pdf\\">SUMITA optical glass data book</a>'}
 
 agf_catalogs['cdgm'] = {'file': 'input/cdgm_2017-09.agf', 
                           'dir': 'output/cdgm',
