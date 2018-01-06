@@ -11,6 +11,11 @@
 #  dependencies: Python3, NumPy
 #------------------------------------------------------------------------------
 
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# CHECK AGF FILE ENCODING !!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 import os, math
 
 agffiles = []
@@ -19,17 +24,17 @@ refs = []
 
 agf_catalogs = {}
 
-agf_catalogs['schott'] = {'file': 'input/schott_2015-07-22.agf',
+agf_catalogs['schott'] = {'file': 'input/schott_2017-01-20b.agf',
                           'dir': 'output/schott',
-                          'refs': '1) <a href=\\"http://refractiveindex.info/download/data/2015/schott-optical-glass-collection-datasheets-july-2015-us.pdf\\">SCHOTT optical glass data sheets 2015-07-22</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/schottzemax-20150722.agf\\">SCHOTT Zemax catalog 2015-07-22</a>'}
+                          'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/schott_2017-01-20b.agf\\">SCHOTT Zemax catalog 2017-01-20b</a> (obtained from <a href=\\"http://www.schott.com/advanced_optics/english/download/\\">http://www.schott.com</a>)<br>See also <a href=\\"http://refractiveindex.info/download/data/2017/schott-optical-glass-collection-datasheets-english-us-17012017.pdf\\">SCHOTT glass data sheets</a>'}
 
-agf_catalogs['ohara'] = {'file': 'input/ohara_2015-12-01.agf',
+agf_catalogs['ohara'] = {'file': 'input/ohara_2017-11-30.agf',
                          'dir': 'output/ohara', 
-                         'refs': '1) <a href=\\"http://refractiveindex.info/download/data/2015/ohara_2015-12-01.pdf\\">OHARA optical glass datasheets 2015-12-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/OHARA_151201.agf\\">OHARA Zemax catalog 2015-12-01</a>'}
+                         'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/ohara_2017-11-30.agf\\">OHARA Zemax catalog 2017-11-30</a> (obtained from <a href=\\"http://www.ohara-inc.co.jp/en/product/optical/list/\\">http://www.ohara-inc.co.jp</a>)<br>See also <a href=\\"http://refractiveindex.info/download/data/2017/ohara_2017-11-30.pdf\\">OHARA glass data sheets</a>'}
 
-agf_catalogs['hikari'] = {'file': 'input/hikari_2015.agf',
+agf_catalogs['hikari'] = {'file': 'input/nikon_2017-11.agf',
                           'dir': 'output/hikari',
-                          'refs': '1) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI_Catalog.pdf\\">HIKARI optical glass catalog 2015-04-01</a><br>2) <a href=\\"http://refractiveindex.info/download/data/2015/HIKARI.agf\\">HIKARI Zemax catalog</a>'}
+                          'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/nikon_2017-11.agf\\">NIKON Zemax catalog 2017-11</a> (obtained from <a href=\\"http://www.nikon.com/products/glass/lineup/materials/optical/\\">http://www.nikon.com</a>)<br>See also <a href=\\"http://refractiveindex.info/download/data/2017/hikari_2017-04-01.pdf\\">HIKARI glass data sheets</a>'}
 
 agf_catalogs['hoya'] = {'file': 'input/hoya_2017-04-01.agf',
                         'dir': 'output/hoya',
@@ -106,7 +111,7 @@ def WriteYML(gd, ymldir, references, glass_count):
                 if k != None:
                     ymlfile.write(' {}'.format(k))
                     
-    elif gd.formula == "2" or "3":
+    elif gd.formula == "2" or "6":
         ymlfile.write('  - type: formula 2 \n')
         ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
         ymlfile.write('    coefficients:')
@@ -117,18 +122,40 @@ def WriteYML(gd, ymldir, references, glass_count):
                 ymlfile.write(' {} {}'.format(float(gd.disp_formula_coefficients[i]),
                                               float(gd.disp_formula_coefficients[i+1])))
                 
-#    if gd.formula == "3":
-#        ymlfile.write('  - type: formula 4 \n')
-#        ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
-#        ymlfile.write('    coefficients:')
-#        n_coeffs = len(gd.disp_formula_coefficients)
-#        ymlfile.write(' {} {} 2 {} 2 {} 0 {} 2'.format(float(gd.disp_formula_coefficients[0])+1,
-#                                                       float(gd.disp_formula_coefficients[1]),
-#                                                       float(gd.disp_formula_coefficients[2]),
-#                                                       float(gd.disp_formula_coefficients[3]),
-#                                                       float(gd.disp_formula_coefficients[4])))
-#                    
-#                
+    elif gd.formula == "3":
+        ymlfile.write('  - type: formula 4 \n')
+        ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
+        ymlfile.write('    coefficients:')
+        n_coeffs = len(gd.disp_formula_coefficients)
+        ymlfile.write(' {} {} 2 {} 2 {} 0 {} 2'.format(float(gd.disp_formula_coefficients[0])+1,
+                                                       float(gd.disp_formula_coefficients[1]),
+                                                       float(gd.disp_formula_coefficients[2]),
+                                                       float(gd.disp_formula_coefficients[3]),
+                                                       float(gd.disp_formula_coefficients[4])))
+    elif gd.formula == "11":
+        ymlfile.write('  - type: formula 3 \n')
+        ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
+        ymlfile.write('    coefficients:')
+        coeff_list = [None, 2, -2, -4, -6, -8, -10, -12]
+        n_coeffs = len(gd.disp_formula_coefficients)
+        for i, k in zip(range(n_coeffs), coeff_list[:n_coeffs]):
+            if float(gd.disp_formula_coefficients[i]):
+                ymlfile.write(' {}'.format(float(gd.disp_formula_coefficients[i]), k))
+                if k != None:
+                    ymlfile.write(' {}'.format(k))
+    
+    elif gd.formula == "12":
+        ymlfile.write('  - type: formula 3 \n')
+        ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
+        ymlfile.write('    coefficients:')
+        coeff_list = [None, 2, -2, -4, -6, -8, 4, 6]
+        n_coeffs = len(gd.disp_formula_coefficients)
+        for i, k in zip(range(n_coeffs), coeff_list[:n_coeffs]):
+            if float(gd.disp_formula_coefficients[i]):
+                ymlfile.write(' {}'.format(float(gd.disp_formula_coefficients[i]), k))
+                if k != None:
+                    ymlfile.write(' {}'.format(k))
+    
     elif gd.formula == "13":
         ymlfile.write('  - type: formula 3 \n')
         ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
@@ -154,14 +181,20 @@ def WriteYML(gd, ymldir, references, glass_count):
     ymlfile.write('SPECS:\n')
     ymlfile.write('    n_is_absolute: false\n')
     ymlfile.write('    λ_is_vacuum: false\n')
-    if len(gd.thermal_disp_coefficients) > 6:
+    if len(gd.thermal_disp_coefficients) > 6 and gd.thermal_disp_coefficients[6] != '':
         ymlfile.write('    temperature: {:.1f} °C\n'.format(float(gd.thermal_disp_coefficients[6])))
     if len(gd.thermal_disp_coefficients) > 5 and \
-            (float(gd.thermal_disp_coefficients[0]) or \
-             float(gd.thermal_disp_coefficients[1]) or \
-             float(gd.thermal_disp_coefficients[2]) or \
-             float(gd.thermal_disp_coefficients[3]) or \
-             float(gd.thermal_disp_coefficients[4]) or \
+            gd.thermal_disp_coefficients[0] != '' and \
+            gd.thermal_disp_coefficients[1] != '' and \
+            gd.thermal_disp_coefficients[2] != '' and \
+            gd.thermal_disp_coefficients[3] != '' and \
+            gd.thermal_disp_coefficients[4] != '' and \
+            gd.thermal_disp_coefficients[5] != '' and \
+            (float(gd.thermal_disp_coefficients[0]) or
+             float(gd.thermal_disp_coefficients[1]) or
+             float(gd.thermal_disp_coefficients[2]) or
+             float(gd.thermal_disp_coefficients[3]) or
+             float(gd.thermal_disp_coefficients[4]) or
              float(gd.thermal_disp_coefficients[5])): 
         ymlfile.write('    coefficients_of_thermal_dispersion: {}\n'\
             .format(' '.join([format(float(gd.thermal_disp_coefficients[i])) \
@@ -177,27 +210,27 @@ def WriteYML(gd, ymldir, references, glass_count):
         if int(float(gd.status)) == num:
              ymlfile.write('    glass_status: {}\n'.format(desc))
 
-    if gd.meltfreq != 0:
+    if gd.meltfreq != '' and gd.meltfreq != 0:
         ymlfile.write('    glass_melt_frequency: {}\n'.format(gd.meltfreq))
-    if gd.density != '-' and float(gd.density):
+    if gd.density != '' and gd.density != '-' and float(gd.density):
         ymlfile.write('    density: {} g/cm<sup>3</sup>\n'.format(float(gd.density)))
-    if gd.cte1 != '-' and float(gd.cte1): #-30...70 C
+    if gd.cte1 != '' and gd.cte1 != '-' and float(gd.cte1): #-30...70 C
         ymlfile.write('    coefficient_of_thermal_expansion_1: {} K<sup>-1</sup>\n'\
                       .format(round(float(gd.cte1)*1.0e-6,15)))
-    if gd.cte2 != '-' and float(gd.cte2): #20...300 C
+    if gd.cte2 != '' and gd.cte2 != '-' and float(gd.cte2): #20...300 C
         ymlfile.write('    coefficient_of_thermal_expansion_2: {} K<sup>-1</sup>\n'.\
                        format(round(float(gd.cte2)*1.0e-6,15)))
-    if gd.dpgf != '-' and float(gd.dpgf):
+    if gd.dpgf != '' and gd.dpgf != '-' and float(gd.dpgf):
         ymlfile.write('    ΔP_gF: {}\n'.format(float(gd.dpgf)))
-    if gd.CR != '-' and float(gd.CR) != -1:
+    if gd.CR != '' and gd.CR != '-' and float(gd.CR) != -1:
         ymlfile.write('    climatic_resistance: {}\n'.format(float(gd.CR)))
-    if gd.FR != '-' and float(gd.FR) != -1:
+    if gd.FR != '' and gd.FR != '-' and float(gd.FR) != -1:
         ymlfile.write('    stain_resistance: {}\n'.format(float(gd.FR)))
-    if gd.SR != '-' and float(gd.SR) != -1:
+    if gd.SR != '' and gd.SR != '-' and float(gd.SR) != -1:
         ymlfile.write('    acid_resistance: {}\n'.format(float(gd.SR)))
-    if gd.AR != '-' and float(gd.AR) != -1:
+    if gd.AR != '' and gd.AR != '-' and float(gd.AR) != -1:
         ymlfile.write('    alkali_resistance: {}\n'.format(float(gd.AR)))
-    if gd.PR != '-' and float(gd.PR) != -1:
+    if gd.PR != '' and gd.PR != '-' and float(gd.PR) != -1:
         ymlfile.write('    phosphate_resistance: {}\n'.format(float(gd.PR)))
 
     ymlfile.close()
@@ -209,7 +242,7 @@ def process(agf_file, out_dir, ref):
     gd = GlassData()
     with open(agf_file) as agf:
         for line in agf:
-            data = [k.strip() for k in line.split()]
+            data = [k.strip() for k in line.split(" ")]
             if not len(data):
                 continue
             if data[0] == 'NM':
@@ -255,7 +288,7 @@ def process(agf_file, out_dir, ref):
                     gd.AR = data[5]
                     gd.PR = data[6]
                 continue
-            if data[0] == 'IT':
+            if data[0] == 'IT' and data[1]!='' and data[2]!='' and data[3]!='':
                 gd.wl.append(data[1])
                 gd.IT.append(data[2])
                 gd.thickness.append(data[3])
