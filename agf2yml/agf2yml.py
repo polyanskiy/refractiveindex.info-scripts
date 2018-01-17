@@ -111,7 +111,7 @@ def WriteYML(gd, ymldir, references, glass_count):
                 if k != None:
                     ymlfile.write(' {}'.format(k))
                     
-    elif gd.formula == "2" or "6":
+    elif gd.formula == "2" or gd.formula == "6":
         ymlfile.write('  - type: formula 2 \n')
         ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
         ymlfile.write('    coefficients:')
