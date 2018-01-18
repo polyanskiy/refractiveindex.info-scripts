@@ -70,7 +70,7 @@ def BB(ω):  #ω: eV
     
     return ε
   
-ev_min=0.2
+ev_min=0.05
 ev_max=5
 npoints=200
 eV = np.logspace(np.log10(ev_min), np.log10(ev_max), npoints)
