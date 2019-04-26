@@ -4,6 +4,7 @@
 # Original data: Kitamura et al. 2007, https://doi.org/10.1364/AO.46.008118
 
 import numpy as np
+from scipy.special import dawsn
 import matplotlib.pyplot as plt
 π = np.pi
 
@@ -14,19 +15,13 @@ import matplotlib.pyplot as plt
 σ =  [31.454, 100.46, 91.601, 63.153, 275.111, 45.220, 22.680, 232.14] #1/cm
 
 
-def D(x):
-    nsteps = 100000
-    tmp = 0
-    for i in range(0, nsteps):
-        t = x/nsteps*(i+.5)
-        tmp += np.exp(t**2-x**2) * x/nsteps
-    return tmp*2 # attn: factor of "2" added in order to reproduce the reported results !!!
+D = lambda x: dawsn(x)
 
 def M(η):  
      ε = εinf
      for i in range(0,8):
          gc = α[i]*np.exp(-4*np.log(2)*((η-η0[i])/σ[i])**2) - α[i]*np.exp(-4*np.log(2)*((η+η0[i])/σ[i])**2)
-         gckkg = 2*α[i]/π * (D(2*np.log(2)**.5*(η+η0[i])/σ[i]) - D(2*np.log(2)**.5*(η-η0[i])/σ[i])) 
+         gckkg = 2*α[i]/np.sqrt(π) * (D(2*np.log(2)**.5*(η+η0[i])/σ[i]) - D(2*np.log(2)**.5*(η-η0[i])/σ[i])) 
          ε += gckkg + 1j*gc
      return ε
   
