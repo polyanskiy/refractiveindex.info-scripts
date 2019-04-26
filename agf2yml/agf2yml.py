@@ -304,7 +304,7 @@ if __name__ == "__main__":
     import sys
     if len(sys.argv) < 2:
         print("Usage: python {} <catalog name>".format(__file__))
-        print("Catalog name can be on of the following: ")
+        print("Catalog name can be one of the following: ")
         for name in agf_catalogs.keys():
             print("{} ".format(name))
         sys.exit(1)
