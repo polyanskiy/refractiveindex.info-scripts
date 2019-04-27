@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-# Author: Mikhail Polyanskiy
-# Last modified: 2017-04-02
+# Author: Mikhail Polyanskiy (2017)
+# corrected/improved by Braden Czapla (2019)
+# Last modified: 2019-04-26
 # Original data: Kitamura et al. 2007, https://doi.org/10.1364/AO.46.008118
 
 import numpy as np
@@ -21,7 +22,8 @@ def M(η):
      ε = εinf
      for i in range(0,8):
          gc = α[i]*np.exp(-4*np.log(2)*((η-η0[i])/σ[i])**2) - α[i]*np.exp(-4*np.log(2)*((η+η0[i])/σ[i])**2)
-         gckkg = 2*α[i]/np.sqrt(π) * (D(2*np.log(2)**.5*(η+η0[i])/σ[i]) - D(2*np.log(2)**.5*(η-η0[i])/σ[i])) 
+         gckkg = 2*α[i]/np.sqrt(π) * (D(2*np.log(2)**.5*(η+η0[i])/σ[i]) - D(2*np.log(2)**.5*(η-η0[i])/σ[i]))
+         # !misprint in the original publication: π in the denominator instead of sqrt(π)!
          ε += gckkg + 1j*gc
      return ε
   
