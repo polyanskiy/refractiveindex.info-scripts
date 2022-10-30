@@ -33,7 +33,7 @@ if __name__ == "__main__":
                  ]
     
     ## Load index
-    data = yaml.load(open(lib_path, 'r').read())
+    data = yaml.safe_load(open(lib_path, 'r').read())
     ct = []
     indexed_files = []
     
