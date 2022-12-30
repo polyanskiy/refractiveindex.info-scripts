@@ -1,5 +1,3 @@
-#!/usr/bin/python
-# coding: utf-8
 ###############################################################################
 #         THIS PROGRAM IS IN PUBLIC DOMAIN                                    #
 #         COPYRIGHT AND RELATED RIGHTS WAIVED VIA CC0 1.0                     #
@@ -12,9 +10,9 @@
 #------------------------------------------------------------------------------
 
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# CHECK AGF FILE ENCODING !!!
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# CHECK AGF FILE ENCODING - CHANGE TO UTF8 IF NEEDED !!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 import os, math
 
@@ -26,27 +24,29 @@ agf_catalogs = {}
 
 agf_catalogs['schott'] = {'file': 'input/schott_2017-01-20b.agf',
                           'dir': 'output/schott',
-                          'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/schott_2017-01-20b.agf\\">SCHOTT Zemax catalog 2017-01-20b</a> (obtained from <a href=\\"http://www.schott.com/advanced_optics/english/download/\\">http://www.schott.com</a>)<br>See also <a href=\\"http://refractiveindex.info/download/data/2017/schott_2017-01-20.pdf\\">SCHOTT glass data sheets</a>'}
+                          'refs': '<a href=\\"https://refractiveindex.info/download/data/2017/schott_2017-01-20b.agf\\">SCHOTT Zemax catalog 2017-01-20b</a> (obtained from <a href=\\"http://www.schott.com/advanced_optics/english/download/\\">http://www.schott.com</a>)<br>See also <a href=\\"http://refractiveindex.info/download/data/2017/schott_2017-01-20.pdf\\">SCHOTT glass data sheets</a>'}
 
 agf_catalogs['ohara'] = {'file': 'input/ohara_2017-11-30.agf',
                          'dir': 'output/ohara', 
-                         'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/ohara_2017-11-30.agf\\">OHARA Zemax catalog 2017-11-30</a> (obtained from <a href=\\"http://www.ohara-inc.co.jp/en/product/optical/list/\\">http://www.ohara-inc.co.jp</a>)<br>See also <a href=\\"http://refractiveindex.info/download/data/2017/ohara_2017-11-30.pdf\\">OHARA glass data sheets</a>'}
+                         'refs': '<a href=\\"https://refractiveindex.info/download/data/2017/ohara_2017-11-30.agf\\">OHARA Zemax catalog 2017-11-30</a> (obtained from <a href=\\"http://www.ohara-inc.co.jp/en/product/optical/list/\\">http://www.ohara-inc.co.jp</a>)<br>See also <a href=\\"http://refractiveindex.info/download/data/2017/ohara_2017-11-30.pdf\\">OHARA glass data sheets</a>'}
 
 agf_catalogs['hikari'] = {'file': 'input/nikon_2017-11.agf',
                           'dir': 'output/hikari',
-                          'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/nikon_2017-11.agf\\">NIKON Zemax catalog 2017-11</a> (obtained from <a href=\\"http://www.nikon.com/products/glass/lineup/materials/optical/\\">http://www.nikon.com</a>)<br>See also <a href=\\"http://refractiveindex.info/download/data/2017/hikari_2017-04-01.pdf\\">HIKARI glass data sheets</a>'}
+                          'refs': '<a href=\\"https://refractiveindex.info/download/data/2017/nikon_2017-11.agf\\">NIKON Zemax catalog 2017-11</a> (obtained from <a href=\\"http://www.nikon.com/products/glass/lineup/materials/optical/\\">http://www.nikon.com</a>)<br>See also <a href=\\"http://refractiveindex.info/download/data/2017/hikari_2017-04-01.pdf\\">HIKARI glass data sheets</a>'}
 
 agf_catalogs['hoya'] = {'file': 'input/hoya_2017-04-01.agf',
                         'dir': 'output/hoya',
-                        'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/hoya_2017-04-01.agf\\">HOYA Zemax catalog 2017-04-01</a> (obtained from <a href=\\"http://www.hoya-opticalworld.com/english/datadownload/\\">http://www.hoya-opticalworld.com</a>)'}
+                        'refs': '<a href=\\"https://refractiveindex.info/download/data/2017/hoya_2017-04-01.agf\\">HOYA Zemax catalog 2017-04-01</a> (obtained from <a href=\\"http://www.hoya-opticalworld.com/english/datadownload/\\">http://www.hoya-opticalworld.com</a>)'}
 
 agf_catalogs['sumita'] = {'file': 'input/sumita_2017-02-02.agf', 
                           'dir': 'output/sumita',
-                          'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/sumita_2017-02-02.agf\\">SUMITA Zemax catalog 2017-02-02</a> (obtained from <a href=\\"http://www.sumita-opt.co.jp/en/download/\\">http://www.sumita-opt.co.jp</a>)<br>See also <a href=\\"http://refractiveindex.info/download/data/2016/sumita_2016-02-01.pdf\\">SUMITA optical glass data book</a>'}
+                          'refs': '<a href=\\"https://refractiveindex.info/download/data/2017/sumita_2017-02-02.agf\\">SUMITA Zemax catalog 2017-02-02</a> (obtained from <a href=\\"http://www.sumita-opt.co.jp/en/download/\\">http://www.sumita-opt.co.jp</a>)<br>See also <a href=\\"http://refractiveindex.info/download/data/2016/sumita_2016-02-01.pdf\\">SUMITA optical glass data book</a>'}
 
-agf_catalogs['cdgm'] = {'file': 'input/cdgm_2017-09.agf', 
-                          'dir': 'output/cdgm',
-                          'refs': '<a href=\\"http://refractiveindex.info/download/data/2017/cdgm_2017-09.agf\\">CDGM Zemax catalog 2017-09</a> (obtained from <a href=\\"http://www.cdgmgd.com/208/\\">http://www.cdgmgd.com</a>)'}
+agf_catalogs['cdgm'] = {'file': 'input/cdgm_2022-06.agf', 
+                        'dir':  'output/cdgm',
+                        'refs': '<a href=\\"https://refractiveindex.info/download/data/2022/CDGM-ZEMAX202206new.AGF\\">CDGM Zemax catalog 2022-06</a> '+\
+                                '(obtained from <a href=\\"http://www.cdgmgd.com/go.htm?k=Download&url=downList\\">http://www.cdgmgd.com</a>)'+\
+                                '<br>See also <a href=\\"https://refractiveindex.info/download/data/2022/CDGM202206.pdf\\">CDGM optical glass data sheets</a>'}
 
 class GlassData:
     wl = None
@@ -86,16 +86,14 @@ class GlassData:
 def WriteYML(gd, ymldir, references, glass_count): 
     print('{}: {}'.format(glass_count, gd.name))
     yml_file_path = os.path.join(ymldir, gd.name.replace('*','star'))
-    try:
-        ymlfile = open('{}.yml'.format(yml_file_path), 'w+', encoding='utf-8')
-    except TypeError: # Python2 has no encoding= argument
-        ymlfile = open('{}.yml'.format(yml_file_path), 'w+')
+    ymlfile = open('{}.yml'.format(yml_file_path), 'w+', encoding='utf-8')
 
     ymlfile.write("# this file is part of refractiveindex.info database\n# refractiveindex.info database is in the public domain\n# copyright and related rights waived via CC0 1.0\n\n")
     ymlfile.write('REFERENCES: "' + references + '"\n')
     
     if gd.comments:
-        ymlfile.write('COMMENTS: "' + ' '.join(gd.comments) + '"\n')
+        if gd.comments != '':
+            ymlfile.write('COMMENTS: "' + gd.comments + '"\n')
     
     ymlfile.write('DATA:\n')
 
@@ -158,7 +156,7 @@ def WriteYML(gd, ymldir, references, glass_count):
     
     elif gd.formula == "13":
         ymlfile.write('  - type: formula 3 \n')
-        ymlfile.write('    range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
+        ymlfile.write('    wavelength_range: {} {}\n'.format(float(gd.wlmin), float(gd.wlmax)))
         ymlfile.write('    coefficients:')
         coeff_list = [None, 2, 4, -2, -4, -6, -8, -10, -12]
         n_coeffs = len(gd.disp_formula_coefficients)
@@ -179,10 +177,10 @@ def WriteYML(gd, ymldir, references, glass_count):
             ymlfile.write('        {:.3f} {:.4E}\n'.format(float(gd.wl[i]), k))
     
     ymlfile.write('SPECS:\n')
-    ymlfile.write('    n_is_absolute: false\n')
-    ymlfile.write('    λ_is_vacuum: false\n')
+    ymlfile.write('    n_absolute: false\n')
+    ymlfile.write('    wavelength_vacuum: false\n')
     if len(gd.thermal_disp_coefficients) > 6 and gd.thermal_disp_coefficients[6] != '':
-        ymlfile.write('    temperature: {:.1f} °C\n'.format(float(gd.thermal_disp_coefficients[6])))
+        ymlfile.write('    temperature: {:.1f} ℃\n'.format(float(gd.thermal_disp_coefficients[6])))
     if len(gd.thermal_disp_coefficients) > 5 and \
             gd.thermal_disp_coefficients[0] != '' and \
             gd.thermal_disp_coefficients[1] != '' and \
@@ -196,11 +194,13 @@ def WriteYML(gd, ymldir, references, glass_count):
              float(gd.thermal_disp_coefficients[3]) or
              float(gd.thermal_disp_coefficients[4]) or
              float(gd.thermal_disp_coefficients[5])): 
-        ymlfile.write('    coefficients_of_thermal_dispersion: {}\n'\
-            .format(' '.join([format(float(gd.thermal_disp_coefficients[i])) \
-                              for i in range(6) ]))) 
-    ymlfile.write('    n_d: {}\n'.format(gd.nd))
-    ymlfile.write('    V_d: {}\n'.format(gd.vd))
+        ymlfile.write('    thermal_dispersion:\n' +
+                      '      - type: "Schott formula"\n' +
+                      '        coefficients: {}\n'
+                      .format(' '.join([format(float(gd.thermal_disp_coefficients[i]))
+                                        for i in range(6) ]))) 
+    ymlfile.write('    nd: {}\n'.format(gd.nd))
+    ymlfile.write('    Vd: {}\n'.format(gd.vd))
     if float(gd.glasscode) > 100000:
         ymlfile.write('    glass_code: {}\n'.format(gd.glasscode))
     
@@ -214,14 +214,22 @@ def WriteYML(gd, ymldir, references, glass_count):
         ymlfile.write('    glass_melt_frequency: {}\n'.format(gd.meltfreq))
     if gd.density != '' and gd.density != '-' and float(gd.density):
         ymlfile.write('    density: {} g/cm<sup>3</sup>\n'.format(float(gd.density)))
+
+    if (gd.cte1 != '' and gd.cte1 != '-' and float(gd.cte1)) or (gd.cte2 != '' and gd.cte2 != '-' and float(gd.cte2)):
+        ymlfile.write('    thermal_expansion:\n')
+                     
     if gd.cte1 != '' and gd.cte1 != '-' and float(gd.cte1): #-30...70 C
-        ymlfile.write('    coefficient_of_thermal_expansion_1: {} K<sup>-1</sup>\n'\
+        ymlfile.write('      - temperature_range: -30 70 ℃\n' +
+                      '        coefficient: {} K<sup>-1</sup>\n'
                       .format(round(float(gd.cte1)*1.0e-6,15)))
+                     
     if gd.cte2 != '' and gd.cte2 != '-' and float(gd.cte2): #20...300 C
-        ymlfile.write('    coefficient_of_thermal_expansion_2: {} K<sup>-1</sup>\n'.\
-                       format(round(float(gd.cte2)*1.0e-6,15)))
+        ymlfile.write('      - temperature_range: 20 300 ℃\n' +
+                      '        coefficient: {} K<sup>-1</sup>\n'
+                      .format(round(float(gd.cte2)*1.0e-6,15)))
+                     
     if gd.dpgf != '' and gd.dpgf != '-' and float(gd.dpgf):
-        ymlfile.write('    ΔP_gF: {}\n'.format(float(gd.dpgf)))
+        ymlfile.write('    dPgF: {}\n'.format(float(gd.dpgf)))
     if gd.CR != '' and gd.CR != '-' and float(gd.CR) != -1:
         ymlfile.write('    climatic_resistance: {}\n'.format(float(gd.CR)))
     if gd.FR != '' and gd.FR != '-' and float(gd.FR) != -1:
@@ -240,7 +248,7 @@ def WriteYML(gd, ymldir, references, glass_count):
 def process(agf_file, out_dir, ref):
     glass_count = 0
     gd = GlassData()
-    with open(agf_file) as agf:
+    with open(agf_file,'r',encoding='utf8') as agf:
         for line in agf:
             data = [k.strip() for k in line.split(" ")]
             if not len(data):
@@ -294,7 +302,8 @@ def process(agf_file, out_dir, ref):
                 gd.thickness.append(data[3])
                 continue
             if data[0] == 'GC':
-                gd.comments = data[1:]
+##                gd.comments = data[1:]
+                gd.comments = ' '.join(data[1:])
 
         if glass_count!=0:
             WriteYML(gd, out_dir, ref, glass_count)
