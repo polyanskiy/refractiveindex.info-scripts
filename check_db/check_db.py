@@ -21,7 +21,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     db_path = args.database
-    db_yml = "library.yml"
+    db_yml = "library-nk.yml"
     lib_path = os.path.join(db_path, db_yml)
 #    lib_xml_root_path = os.path.sep.join([k for k in db_path.split(os.path.sep) if k!=''][:-1])
 #    lib_path = os.path.sep.join([lib_xml_root_path, db_yml])
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     ## List all YML files to process, recursively. Omit library.yml.
     yaml_files = [os.path.normpath(os.path.join(dirpath, f))
                   for dirpath, dirnames, files in os.walk(db_path)
-                  for f in fnmatch.filter(files, '*.yml') if f != 'library.yml'
+                  for f in fnmatch.filter(files, '*.yml') if f != 'library-nk.yml'
                  ]
     
     ## Load index
@@ -65,7 +65,7 @@ if __name__ == "__main__":
                     else:
                         page_auth = page["PAGE"]
                         page_name = page["name"]
-                        page_path = os.path.normpath(os.path.join(db_path, 'data', page["data"]))
+                        page_path = os.path.normpath(os.path.join(db_path, 'data-nk', page["data"]))
                         ct[-1]["content"][divider][-1]["book_page"][subpage] \
                             .append({
                                 "page_auth":page_auth,
