@@ -12,7 +12,7 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description="""
                                      Checks that all files on disk also appear
-                                     in the index library.yml.
+                                     in the index catalog-nk.yml.
                                      Also checks that all files in the index
                                      have their counterpart on disk.
                                      """)
@@ -21,15 +21,15 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     db_path = args.database
-    db_yml = "library-nk.yml"
+    db_yml = "catalog-nk.yml"
     lib_path = os.path.join(db_path, db_yml)
 #    lib_xml_root_path = os.path.sep.join([k for k in db_path.split(os.path.sep) if k!=''][:-1])
 #    lib_path = os.path.sep.join([lib_xml_root_path, db_yml])
 
-    ## List all YML files to process, recursively. Omit library.yml.
+    ## List all YML files to process, recursively.
     yaml_files = [os.path.normpath(os.path.join(dirpath, f))
-                  for dirpath, dirnames, files in os.walk(db_path)
-                  for f in fnmatch.filter(files, '*.yml') if f != 'library-nk.yml'
+                  for dirpath, dirnames, files in os.walk(db_path+"/data-nk")
+                  for f in fnmatch.filter(files, '*.yml')
                  ]
     
     ## Load index
@@ -118,6 +118,6 @@ if __name__ == "__main__":
 #        print(ff)
 #    
 #    print("")
-#    print("library.yml:")
+#    print("catalog-nk.yml:")
 #    for ff in indexed_files:
 #        print(ff)
