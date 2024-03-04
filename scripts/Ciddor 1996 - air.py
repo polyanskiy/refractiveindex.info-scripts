@@ -1,7 +1,8 @@
-# -*- coding: utf-8 -*-
-# Author: Mikhail Polyanskiy
-# Last modified: 2017-11-23
 # Original data: Ciddor 1996, https://doi.org/10.1364/AO.35.001566
+
+# CHANGELOG
+# 2017-11-23 [Misha Polyanskiy] original version
+# 2024-03-03 [Misha Polyanskiy] minor refactoring
 
 ###############################################################################
 
@@ -56,11 +57,10 @@ def n(λ,t,p,h,xc):
     β = 3.14e-8       #Pa^-1,
     γ = 5.6e-7        #°C^-2
 
-    #saturation vapor pressure of water vapor in air at temperature T
-    if(t>=0):
-        svp = np.exp(A*T**2 + B*T + C + D/T) #Pa
-    else:
-        svp = 10**(-2663.5/T+12.537)
+    #saturation vapor pressure of water vapor in air at temperature T (Pa)
+    svp = np.where(t>=0,
+        np.exp(A*T**2 + B*T + C + D/T), # if t>=0
+        10**(-2663.5/T+12.537))         # if t<0
     
     #enhancement factor of water vapor in air
     f = α + β*p + γ*t**2
@@ -103,7 +103,7 @@ def n(λ,t,p,h,xc):
 ##############################################################################
     
 #use this to calculate n at particular conditions
-#print("n =",n(0.6328,15,101325,0,450))
+print("n =",n(0.6328,15,101325,0,450))
 
 #plot n vs μm
 λ = np.arange(0.3, 1.691, 0.01)
@@ -122,11 +122,9 @@ plt.ylabel('n-1')
 plt.legend()
 
 t = np.arange(-40, 100.1, 1)
-n5 = [None] * len(t)
-for i in range(0, len(t)):
-    n5[i] = n(0.6328,t[i],101325,0,450)-1 #dry air, 450 ppm @ HeNe wavelength
+n5 = n(0.6328,t,101325,0,450) #dry air, 450 ppm @ HeNe wavelength
 plt.figure(2)
-plt.plot(t, n5, label="dry air, 101325 Pa, 450 ppm CO2, 632.8 nm")
+plt.plot(t, n5-1, label="dry air, 101325 Pa, 450 ppm CO2, 632.8 nm")
 plt.xlabel('Temperature (°C)')
 plt.ylabel('n-1')
 plt.legend()
@@ -134,7 +132,7 @@ plt.legend()
 p = np.arange(80000, 120001, 250)
 n6 = n(0.6328,15,p,0,450) #dry air, 15 °, 450 ppm @ HeNe wavelength
 plt.figure(3)
-plt.plot(p, n6-1, label="dry air, 15 °, 450 ppm CO2, 632.8 nm")
+plt.plot(p, n6-1, label="dry air, 15 °C, 450 ppm CO2, 632.8 nm")
 plt.xlabel('Pressure (Pa)')
 plt.ylabel('n-1')
 plt.legend()
@@ -142,7 +140,7 @@ plt.legend()
 h = np.arange(0, 1.001, 0.01)
 n7 = n(0.6328, 15, 101325, h, 450) #dry air, 15 °, 450 ppm @ HeNe wavelength
 plt.figure(4)
-plt.plot(h*100, n7-1, label="15 °, 101325 Pa, 450 ppm CO2, 632.8 nm")
+plt.plot(h*100, n7-1, label="15 °C, 101325 Pa, 450 ppm CO2, 632.8 nm")
 plt.xlabel('Humidity (%)')
 plt.ylabel('n-1')
 plt.legend()
@@ -150,7 +148,9 @@ plt.legend()
 xc = np.arange(0, 2001, 100)
 n8 = n(0.6328, 15, 101325, 0, xc) #dry air, 15 °, 450 ppm @ HeNe wavelength
 plt.figure(5)
-plt.plot(xc, n8-1, label="dry air, 15 °, 101325 Pa, 632.8 nm")
+plt.plot(xc, n8-1, label="dry air, 15 °C, 101325 Pa, 632.8 nm")
 plt.xlabel('CO2 concentration (ppm)')
 plt.ylabel('n-1')
 plt.legend()
+
+plt.show()
