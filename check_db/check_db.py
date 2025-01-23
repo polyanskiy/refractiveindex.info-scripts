@@ -6,7 +6,6 @@ import yaml
 
 import os
 import fnmatch
-from collections import Counter
 
 if __name__ == "__main__":
     
@@ -21,103 +20,75 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     db_path = args.database
-    db_yml = "catalog-nk.yml"
-    lib_path = os.path.join(db_path, db_yml)
-#    lib_xml_root_path = os.path.sep.join([k for k in db_path.split(os.path.sep) if k!=''][:-1])
-#    lib_path = os.path.sep.join([lib_xml_root_path, db_yml])
 
-    ## List all YML files to process, recursively.
-    yaml_files = [os.path.normpath(os.path.join(dirpath, f))
-                  for dirpath, dirnames, files in os.walk(db_path+"/data-nk")
-                  for f in fnmatch.filter(files, '*.yml')
-                 ]
+    ## List all YML files in the database, recursively.
+    existing_files = [os.path.normpath(os.path.join(dirpath, f))
+                  for dirpath, dirnames, files in os.walk(db_path+"/data")
+                  for f in fnmatch.filter(files, '*.yml')]
     
-    ## Load index
-    data = yaml.safe_load(open(lib_path, 'r').read())
-    ct = []
-    indexed_files = []
+    listed_files = []
     
-    # 5 main categories, ordered: main, organic, glasses, other, 3D
-    for cat in data:
-        cat_shelf = cat["SHELF"]
-        cat_name = cat["name"]
-        cat_content = cat["content"]
-        ct.append({"name":cat_shelf, "desc":cat_name, "content":{}})
-        # Each category has several books
-        divider = "root"
-        ct[-1]["content"][divider] = []
-        for book in cat_content:
-            if "DIVIDER" in book:
-                divider = book["DIVIDER"]
-                ct[-1]["content"][divider] = []
-            elif "BOOK" in book:
-                book_cat = book["BOOK"]
-                book_name = book["name"]
-                ct[-1]["content"][divider].append({"book_cat":book_cat,
-                                    "book_name":book_name,
-                                    "book_page":{}})
-                subpage = "root"
-                ct[-1]["content"][divider][-1]["book_page"][subpage] = []
-                for page in book["content"]:
-                    if "DIVIDER" in page:
-                        subpage = page["DIVIDER"]
-                        ct[-1]["content"][divider][-1]["book_page"][subpage]= []
-                    else:
-                        page_auth = page["PAGE"]
-                        page_name = page["name"]
-                        page_path = os.path.normpath(os.path.join(db_path, 'data-nk', page["data"]))
-                        ct[-1]["content"][divider][-1]["book_page"][subpage] \
-                            .append({
-                                "page_auth":page_auth,
-                                "page_name":page_name,
-                                "page_path":page_path
-                                })
-                        indexed_files.append(page_path)
+    ################################## nk #####################################
+    catalog = "catalog-nk.yml"
+    lib_path = os.path.join(db_path, catalog)
+    library = yaml.safe_load(open(lib_path, 'r').read())
+    
+    print("\nFinding data files listed in " + catalog + "\n")
+    
+    for shelf in library:
+        if "SHELF" in shelf:
+            shelf_id = shelf["SHELF"]
+            shelf_name = shelf["name"]
+            print(shelf_id)
+            for book in shelf["content"]:
+                if "BOOK" in book:
+                    book_id = book["BOOK"]
+                    book_name = book["name"]
+                    print("  "+book_id)
+                    for page in book["content"]:
+                        if "PAGE" in page:
+                            page_id = page["PAGE"]
+                            page_name = page["name"]
+                            page_data = page["data"]
+                            page_path = os.path.normpath(os.path.join(db_path, 'data', page_data))
+                            listed_files.append(page_path)
+                            print("    " + page_id + ": " + page_data)
+     
+    ################################## n2 #####################################
+    catalog = "catalog-n2.yml"
+    lib_path = os.path.join(db_path, catalog)
+    library = yaml.safe_load(open(lib_path, 'r').read())
+    
+    print("\nFinding data files listed in " + catalog + "\n")
+                            
+    for shelf in library:
+        if "SHELF" in shelf:
+            shelf_id = shelf["SHELF"]
+            shelf_name = shelf["name"]
+            print(shelf_id)
+            for book in shelf["content"]:
+                if "BOOK" in book:
+                    book_id = book["BOOK"]
+                    book_name = book["name"]
+                    print("  "+book_id)
+                    for page in book["content"]:
+                        if "PAGE" in page:
+                            page_id = page["PAGE"]
+                            page_name = page["name"]
+                            page_data = page["data"]
+                            page_path = os.path.normpath(os.path.join(db_path, 'data', page_data))
+                            listed_files.append(page_path)
+                            print("    " + page_id + ": " + page_data)
+                            
+    ################################ COMPARE ##################################
         
-    yml_files_num = len(yaml_files)
-    yml_files_indexed_num = len(indexed_files)
-    if yml_files_indexed_num != yml_files_num:
-        print("File number mismatch: {} files in the index, {} files on disk" \
-            .format(yml_files_indexed_num, yml_files_num)) 
-    unique_files = set(yaml_files)
-    unique_files_index = set(indexed_files)
+    print("{} unique data files listed in the catalogs".format(len(set(listed_files))))
     
-    print("{} unique files in the index, {} unique files on disk" \
-        .format(len(unique_files_index), len(unique_files)))
-    print("")
-    counts = Counter(indexed_files)
-    most_referenced = counts.most_common(yml_files_indexed_num - yml_files_num)
-    for name, value in most_referenced:
-        if value <= 1: continue
-        print("{} appears {} times in the index".format(name, value))
-    
-    print("")
-    files_intersection = unique_files.symmetric_difference(unique_files_index)
-    print("Files in one set but not the other: ")
-    for ff in files_intersection:
-        print(ff)
-    
-    print("")
-    if (unique_files_index <= unique_files):
-        # Files on disk are a subset of the files in the index
-        print("All files of the index have their counterpart on disk.")
-        
-        diff = unique_files.difference(unique_files_index)
-        if len(diff) > 0:
-            print("Some files on disk are not in the index :")
-            for ff in diff:
-                print(ff)
+    diff = set(listed_files).difference(set(existing_files))
+    if(len(diff)==0):
+        print("No missing data files")
     else:
-        print("Some files of the index are not on disk :")
-        for ff in unique_files_index.difference(unique_files):
-            print(ff)
-    
-#    print("")
-#    print("yaml files:")
-#    for ff in yaml_files:
-#        print(ff)
-#    
-#    print("")
-#    print("catalog-nk.yml:")
-#    for ff in indexed_files:
-#        print(ff)
+        print("Missing data files:")
+        for path in diff:
+            print(path)
+
