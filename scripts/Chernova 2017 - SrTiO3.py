@@ -6,15 +6,11 @@
 
 # Version history
 # 2025-02-19 first version (Pavel Dmitriev)
+# 2025-02-27 simplify output (Misha Polyanskiy)
 #
 
-from ruamel.yaml.scalarstring import PreservedScalarString
-from ruamel.yaml import YAML
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib
-
-matplotlib.use("TkAgg")
 
 # Model parameters
 E = [3.91, 4.19, 4.76, 5.03, 6.05, 6.28, 6.4, 8.3, 9.47]
@@ -84,51 +80,30 @@ k = (epsilon**.5).imag
 n_interp = np.interp(fit_eV, eV, n)
 k_interp = np.interp(fit_eV, eV, k)
 
-wl_nm = np.divide(1239.84193, fit_eV)
-wl_um = np.divide(wl_nm, 1000.)
+wl_um = np.divide(1.23984193, fit_eV)
 
-datastring = ""
+#============================   DATA OUTPUT   =================================
+file = open('out.txt', 'w')
+for i in range(fit_points-1, -1, -1):
+    file.write('\n        {:.4e} {:.4e} {:.4e}'.format(wl_um[i],n_interp[i],k_interp[i]))
+file.close()
+    
+    
+#===============================   PLOT   =====================================
+#plot n vs eV
+plt.figure(1)
+plt.plot(fit_eV, n_interp)
+plt.xlabel('Photon energy (eV)')
+plt.ylabel('n')
 
-datalist = []
+#plot n vs eV
+plt.figure(2)
+plt.plot(fit_eV, k_interp)
+plt.xlabel('Photon energy (eV)')
+plt.ylabel('k')
 
-for l, n_, k_ in zip(wl_um, n_interp, k_interp):
-    datastring = datastring + "{:.4e} {:.4e} {:.4e}\n".format(l, n_, k_)
-    datalist.append([l, n_, k_])
-
-data = {
-    "REFERENCES": PreservedScalarString("""E. Chernova, C. Brooks, D. Chvostova, Z. Bryknar, A. Dejneka, and M. Tyunina.
-    Optical NIR-VIS-VUV constants of advanced substrates for thin-film devices
-    <a href="https://doi.org/10.1364/OME.7.003844"><i>Opt. Mater. Express</i>, Vol. 7, Issue 11, pp. 3844-3862 (2017)</a>"""),
-
-    "COMMENTS": PreservedScalarString("""Single crystal Strontium titanate"""),
-
-    "DATA": {
-        "type": "tabulated nk",
-        "data": PreservedScalarString(datastring)
-    }
-}
-
-yml = YAML()
-with open('Chernova_SrTiO3.yml', 'w') as outfile:
-    yml.dump(data, outfile)
-
-
-fig, axs = plt.subplots(2)
-fig.suptitle('SrTiO3')
-
-axs[0].plot(eV, n, label="n")
-axs[1].plot(eV, k, label="k")
-
-axs[0].set_ylim([1, 3.5])
-axs[1].set_ylim([0, 1.7])
-
-axs[0].set_xlim([0, 9])
-axs[1].set_xlim([0, 9])
-
-#plt.plot(eV, eps_2, label="k", linestyle="dotted")
-axs[1].set_xlabel('Energy, eV')
-axs[0].set_ylabel('Optical constants')
-axs[1].set_ylabel('Optical constants')
-
-plt.legend()
-plt.show()
+#plot n,k vs μm
+plt.figure(3)
+plt.plot(wl_um, n_interp, label="n")
+plt.plot(wl_um, k_interp, label="k")
+plt.xlabel('Wavelength (μm)')
