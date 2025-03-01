@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 # Author: Braden Czapla (2019)
-# Last modified: 2019-04-30
 # Original data: Tsuda et al. 2018, https://doi.org/10.1364/OE.26.006899
+
+# Version history
+# 2019-04-30 first version (Braden Czapla)
+# 2025-02-28 simplify output (Misha Polyanskiy)
 
 from __future__ import absolute_import, division, print_function
 import numpy as np
@@ -27,28 +30,10 @@ def w(w_max, w_min, step):
 # Compute dielectric function using Lorentzian model.
 # Units of w and ResFreq must match and must be directly proportional to angular frequency. All other parameters are unitless.
 def Lorentzian(w, ResFreq, Strength, Damping, Eps_Inf):
-    Permittivity = Eps_Inf*np.ones(len(w), dtype=np.complex)
+    Permittivity = Eps_Inf*np.ones(len(w), dtype=complex)
     for ii in range(len(ResFreq)):
         Permittivity += Strength[ii]/( 1. - (w/ResFreq[ii])**2 - 1j*Damping[ii]*(w/ResFreq[ii]) )   
     return Permittivity
-
-# Save w, n, k to YML file
-def SaveYML(w_um, RefInd, filename, references='', comments=''):
-    
-    header = np.empty(9, dtype=object)
-    header[0] = '# this file is part of refractiveindex.info database'
-    header[1] = '# refractiveindex.info database is in the public domain'
-    header[2] = '# copyright and related rights waived via CC0 1.0'
-    header[3] = ''
-    header[4] = 'REFERENCES:' + references
-    header[5] = 'COMMENTS:' + comments
-    header[6] = 'DATA:'
-    header[7] = '  - type: tabulated nk'
-    header[8] = '    data: |'
-    
-    export = np.column_stack((w_um, np.real(RefInd), np.imag(RefInd)))
-    np.savetxt(filename, export, fmt='%4.2f %#.4g %#.3e', delimiter=' ', header='\n'.join(header), comments='',newline='\n        ')
-    return
 
 ###############################################################################
 
@@ -74,10 +59,8 @@ EpsInf = 2.162
 eps = Lorentzian(w_invcm, ResFreq, Strength, Damping, EpsInf)
 RefInd = np.sqrt(eps)
 
-references = ' "S. Tsuda, S. Yamaguchi, Y. Kanamori, and H. Yugami. Spectral and angular shaping of infrared radiation in a polymer resonator with molecular vibrational modes, <a href=\"https://doi.org/10.1364/OE.26.006899\"><i>Opt. Express</i> <b>26</b>, 6899-6915 (2018)</a>"'
-comments = ' "MicroChem PMMA resist with a molecular weight of 950,000; Baked at 100°C for 10 min on a hot plate; Lorentz model parameters provided in Table 1 of manuscript."'
-SaveYML(w_um, RefInd, 'Tsuda-PMMA (Lorentz Model).yml', references, comments)
-## ##
+export = np.column_stack((w_um, np.real(RefInd), np.imag(RefInd)))
+np.savetxt('out.txt', export, fmt='        %4.3f %#.6g %#.3e')
 
 ## Plotting ## Note: This is not an exact match because Fig. 3 plots the results of the Brendel-Bormann model. The Lorentz model is very similar, but with more extreme peaks.
 plt.figure('Figure 3a - Real(ϵ)')
