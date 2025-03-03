@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 # Author: Braden Czapla (2019)
-# Last modified: 2019-04-29
 # Original data: Kaiser et al. 1962, https://doi.org/10.1103/PhysRev.127.1950
+
+# Version history
+# 2019-04-29 first version (Braden Czapla)
+# 2025-02-28 simplify output (Misha Polyanskiy)
 
 from __future__ import absolute_import, division, print_function
 import numpy as np
@@ -27,28 +30,10 @@ def w(w_max, w_min, step):
 # Compute dielectric function using Lorentzian model.
 # Units of w and ResFreq must match and must be directly proportional to angular frequency. All other parameters are unitless.
 def Lorentzian(w, ResFreq, Strength, Damping, Eps_Inf):
-    Permittivity = Eps_Inf*np.ones(len(w), dtype=np.complex)
+    Permittivity = Eps_Inf*np.ones(len(w), dtype=complex)
     for ii in range(len(ResFreq)):
         Permittivity += Strength[ii]/( 1. - (w/ResFreq[ii])**2 - 1j*Damping[ii]*(w/ResFreq[ii]) )   
     return Permittivity
-
-# Save w, n, k to YML file
-def SaveYML(w_um, RefInd, filename, references='', comments=''):
-    
-    header = np.empty(9, dtype=object)
-    header[0] = '# this file is part of refractiveindex.info database'
-    header[1] = '# refractiveindex.info database is in the public domain'
-    header[2] = '# copyright and related rights waived via CC0 1.0'
-    header[3] = ''
-    header[4] = 'REFERENCES:' + references
-    header[5] = 'COMMENTS:' + comments
-    header[6] = 'DATA:'
-    header[7] = '  - type: tabulated nk'
-    header[8] = '    data: |'
-    
-    export = np.column_stack((w_um, np.real(RefInd), np.imag(RefInd)))
-    np.savetxt(filename, export, fmt='%4.2f %#.4g %#.4g', delimiter=' ', header='\n'.join(header), comments='',newline='\n        ')
-    return
 
 ###############################################################################
 
@@ -73,10 +58,8 @@ Eps_Inf = 2.045
 eps = Lorentzian(w_invcm, ResFreq, Strength, Damping, Eps_Inf)
 RefInd = np.sqrt(eps)
 
-references = ' "W. Kaiser, W. G. Spitzer, R. H. Kaiser, and L. E. Howarth. Infrared Properties of CaF2, SrF2, and BaF2, <a href=\"https://doi.org/10.1103/PhysRev.127.1950\"><i>Phys. Rev.</i> <b>127</b>, 1950 (1962)</a>"'
-comments = ' "Single crystal; Room temperature; Lorentz oscillator model parameters provided."'
-SaveYML(w_um, RefInd, 'Kaiser-CaF2.yml', references, comments)
-## ##
+export = np.column_stack((w_um, np.real(RefInd), np.imag(RefInd)))
+np.savetxt('out.txt', export, fmt='        %4.3f %#.6g %#.3e')
 
 ## Plotting ##
 plt.figure('Figure 7 - n')
