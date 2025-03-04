@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Original data: Synowicki et al. 2017, https://doi.org/10.1016/j.tsf.2004.02.028
+# Original data: Synowicki et al. 2004, https://doi.org/10.1016/j.tsf.2004.02.028
 # NB! Lorentz equation 1a seems to have a typo -- denominator parenthesis should be squared (?)
 
 # Kramers-Kroning Integration https://doi.org/10.1366/0003702884430380

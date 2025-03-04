@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Original data: Synowicki et al. 2017, https://doi.org/10.1016/j.tsf.2004.02.028
+# Original data: Synowicki et al. 2004, https://doi.org/10.1016/j.tsf.2004.02.028
 # NB! Lorentz equation 1a seems to have a typo -- denominator parenthesis should be squared (?)
 
 # Kramers-Kroning Integration https://doi.org/10.1366/0003702884430380
@@ -15,7 +15,6 @@ import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use("TkAgg")
 
-from elli.kkr.kkr import im2re
 
 def generate_epsilon():
     #
@@ -42,7 +41,7 @@ def generate_epsilon():
 
     #Poles
 
-    eps_inf = 1
+    eps_inf = 1.
 
     # Simulate range
     num_points = 6000
@@ -51,10 +50,6 @@ def generate_epsilon():
 
     waveNumber = np.linspace(1, 6000, num_points, True) #cm-1
     dcm = waveNumber[1] - waveNumber[0]
-
-
-    # Epsilon infinity
-    epsilon_1_inf = eps_inf * np.ones(waveNumber.shape)
 
     #
     # Oscillators
@@ -69,7 +64,7 @@ def generate_epsilon():
         eps_2_osc = [
             Gaussian_Amplitude[i] * np.exp(
                 -((e - Gaussian_E0[i]) / (f * Gaussian_Br[i])) ** 2
-            ) - \
+            ) +
             Gaussian_Amplitude[i] * np.exp(
                 -((e + Gaussian_E0[i]) / (f * Gaussian_Br[i])) ** 2
             )
@@ -83,7 +78,7 @@ def generate_epsilon():
     #
     eps_1_osc = np.zeros(waveNumber.shape)
     for i, e in enumerate(waveNumber):
-        prefactor = (2 / np.pi) * 2 * dcm
+        prefactor = (2. / np.pi) * 2. * dcm
 
         maclaurin_sum = 0
         if i % 2 == 0:
@@ -98,7 +93,7 @@ def generate_epsilon():
             )
         eps_1_osc[i] = prefactor * maclaurin_sum
 
-    eps_1 = np.add(epsilon_1_inf, eps_1_osc)
+    eps_1 = np.add(eps_inf, eps_1_osc)
 
     epsilon = np.asarray(eps_1 + 1j * eps_2, dtype=np.complex128)
 
@@ -107,6 +102,7 @@ def generate_epsilon():
 
 if __name__ == "__main__":
     waveNumber, epsilon = generate_epsilon()
+    model_um = np.divide(waveNumber, 1e4)
 
     # Model range
     fit_points = 200
