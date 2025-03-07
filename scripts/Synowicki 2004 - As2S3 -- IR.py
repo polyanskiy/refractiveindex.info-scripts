@@ -17,6 +17,7 @@ matplotlib.use("TkAgg")
 
 
 def generate_epsilon():
+    auxfuncs = __import__("Synowicki 2004 - Aux funcs")
     #
     # Model parameters
     #
@@ -45,55 +46,25 @@ def generate_epsilon():
 
     # Simulate range
     num_points = 6000
-    # eV = np.linspace(0.001, 0.9, num_points, True)
-    # dEv = eV[1] - eV[0]
 
     waveNumber = np.linspace(1, 6000, num_points, True) #cm-1
-    dcm = waveNumber[1] - waveNumber[0]
 
     #
     # Oscillators
     #
     eps_2 = np.zeros(waveNumber.shape)
+    eps_1 = np.zeros(waveNumber.shape)
 
     #
     # Gaussian oscillators -- only for IR
     #
     for i in range(len(Gaussian_E0)):
-        f = (0.5 / np.sqrt(np.log(2)))
-        eps_2_osc = [
-            Gaussian_Amplitude[i] * np.exp(
-                -((e - Gaussian_E0[i]) / (f * Gaussian_Br[i])) ** 2
-            ) +
-            Gaussian_Amplitude[i] * np.exp(
-                -((e + Gaussian_E0[i]) / (f * Gaussian_Br[i])) ** 2
-            )
-            for e in waveNumber
-        ]
+        eps_1_osc, eps_2_osc = auxfuncs.gaussian(waveNumber, Gaussian_E0[i], Gaussian_Amplitude[i], Gaussian_Br[i])
+        eps_2 += eps_2_osc
+        eps_1 += eps_1_osc
 
-        eps_2 = np.add(eps_2, eps_2_osc)
 
-    #
-    # KK integral
-    #
-    eps_1_osc = np.zeros(waveNumber.shape)
-    for i, e in enumerate(waveNumber):
-        prefactor = (2. / np.pi) * 2. * dcm
-
-        maclaurin_sum = 0
-        if i % 2 == 0:
-            js = [z for z in range(waveNumber.shape[-1])[1::2]]
-        else:
-            js = [z for z in range(waveNumber.shape[-1])[0::2]]
-
-        for j in js:
-            maclaurin_sum += (1. / 2.) * (
-                    eps_2[j] / (waveNumber[j] - e) +
-                    eps_2[j] / (waveNumber[j] + e)
-            )
-        eps_1_osc[i] = prefactor * maclaurin_sum
-
-    eps_1 = np.add(eps_inf, eps_1_osc)
+    eps_1 += eps_inf
 
     epsilon = np.asarray(eps_1 + 1j * eps_2, dtype=np.complex128)
 

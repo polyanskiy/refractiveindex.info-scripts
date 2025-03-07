@@ -17,74 +17,57 @@ matplotlib.use("TkAgg")
 
 
 def generate_epsilon():
+    auxfuncs = __import__("Synowicki 2004 - Aux funcs")
     #
     # Model parameters
     #
 
-    # Gaussian eV -- only UV
-    Gaussian_Amplitude = [0.55291, 4.2344, 6.71*10**-4, 6.18*10**-5, 3.56*10**-5]
-    Gaussian_E0 = [8.6734, 7.6359, 7.2652, 5.0889, 4.3675]
-    Gaussian_Br = [1.0501, 0.18511, 2.1479, 0.80321, 0.60936]
+    # # Gaussian eV -- only UV
+    # Gaussian_Amplitude = [0.55291, 4.2344, 6.71*10**-4, 6.18*10**-5, 3.56*10**-5]
+    # Gaussian_E0 = [8.6734, 7.6359, 7.2652, 5.0889, 4.3675]
+    # Gaussian_Br = [1.0501, 0.18511, 2.1479, 0.80321, 0.60936]
 
     # Lorentz cm-1 -- only IR
     Lorentz_Amplitude = [1702.3, 0.26993]
     Lorentz_Eg = [396.73, 643.56]
     Lorentz_Br = [1.5498, 106.86]
 
-    #Tauc Lorentz eV -- only UV
-    TL_A = [297.39, 2274.6]
-    TL_C = [4.4633, 0.17911]
-    TL_E0 = [9.623, 7.7091]
-    TL_Eg = [7.9862, 7.6602]
+    # #Tauc Lorentz eV -- only UV
+    # TL_A = [297.39, 2274.6]
+    # TL_C = [4.4633, 0.17911]
+    # TL_E0 = [9.623, 7.7091]
+    # TL_Eg = [7.9862, 7.6602]
 
     #Poles
 
     eps_inf = 1
 
     # Simulate range
-    num_points = 5601
-    # eV = np.linspace(0.001, 0.9, num_points, True)
-    # dEv = eV[1] - eV[0]
+    num_points = 6000
 
-    waveNumber = np.linspace(300, 5900, num_points, True) #cm-1
-    dcm = waveNumber[1] - waveNumber[0]
-
-
-    # Epsilon infinity
-
-    epsilon_1_inf = eps_inf * np.ones(waveNumber.shape)
+    waveNumber = np.linspace(1, 6000, num_points, True) #cm-1
 
     #
     # Oscillators
     #
     eps_2 = np.zeros(waveNumber.shape)
+    eps_1 = np.zeros(waveNumber.shape)
 
     #
-    # Lorentz oscillators -- Only for IR
+    # Lorentz oscillators
     #
-    eps_1_lor = np.zeros(shape=waveNumber.shape)
-    for i in range(len(Lorentz_Eg)):
-        eps_2_osc = [
-            Lorentz_Amplitude[i] * Lorentz_Br[i] * Lorentz_Eg[i] * e /
-            ( (Lorentz_Eg[i]**2 - e**2)**2 + Lorentz_Br[i]**2*e**2)
-            for e in waveNumber
-        ]
+    for i in range(len(Lorentz_Amplitude)):
+        eps_1_osc, eps_2_osc = auxfuncs.lorentz(waveNumber, Lorentz_Amplitude[i], Lorentz_Br[i], Lorentz_Eg[i])
+        eps_2 += eps_2_osc
+        eps_1 += eps_1_osc
 
-        eps_2 = np.add(eps_2, eps_2_osc)
 
-        eps_1_osc = [
-            Lorentz_Amplitude[i] * Lorentz_Br[i] * Lorentz_Eg[i] * (Lorentz_Eg[i]**2 - e**2) /
-            ( (Lorentz_Eg[i]**2 - e**2)**2 + Lorentz_Br[i]**2*e**2)
-            for e in waveNumber
-        ]
-
-        eps_1_lor = np.add(eps_1_lor, eps_1_osc)
-
-    eps_1 = np.add(epsilon_1_inf, eps_1_lor)
+    eps_1 += eps_inf
 
     epsilon = np.asarray(eps_1 + 1j * eps_2, dtype=np.complex128)
 
     return waveNumber, epsilon
+
 
 
 if __name__ == "__main__":

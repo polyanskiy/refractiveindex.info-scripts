@@ -17,6 +17,7 @@ matplotlib.use("TkAgg")
 
 
 def generate_epsilon():
+    auxfuncs = __import__("Synowicki 2004 - Aux funcs")
     #
     # Model parameters
     #
@@ -26,91 +27,41 @@ def generate_epsilon():
     Gaussian_E0 = [69.044, 331.92, 339.2, 350.77, 476.18, 539.94, 709.72]
     Gaussian_Br = [322.13, 43.363, 134.76, 907.53, 68.217, 122.4, 99.048]
 
-    #Tauc Lorentz eV -- only UV
-    TL_A = [98.541, 145.09, 255.06]
-    TL_E0 = [6.1261, 7.2693, 8.7795]
-    TL_C = [1.2042, 2.2904, 2.8711]
-    TL_Eg = [5.124, 5.3382, 6.8865]
+    # #Tauc Lorentz eV -- only UV
+    # TL_A = [98.541, 145.09, 255.06]
+    # TL_E0 = [6.1261, 7.2693, 8.7795]
+    # TL_C = [1.2042, 2.2904, 2.8711]
+    # TL_Eg = [5.124, 5.3382, 6.8865]
 
-    #Poles
+    # Poles
 
     eps_inf = 1
 
     # Simulate range
     num_points = 5601
-    # eV = np.linspace(0.001, 0.9, num_points, True)
-    # dEv = eV[1] - eV[0]
 
-    waveNumber = np.linspace(300, 5900, num_points, True) #cm-1
-    dcm = waveNumber[1] - waveNumber[0]
+    waveNumber = np.linspace(300, 5900, num_points, True)  # cm-1
 
+    # Simulate range
+    num_points = 6000
 
-    # Epsilon infinity
-
-    epsilon_1_inf = eps_inf * np.ones(waveNumber.shape)
+    waveNumber = np.linspace(1, 6000, num_points, True)  # cm-1
 
     #
     # Oscillators
     #
     eps_2 = np.zeros(waveNumber.shape)
-
+    eps_1 = np.zeros(waveNumber.shape)
 
     #
-    # Gaussian oscillators -- only for UV
+    # Gaussian oscillators -- only for IR
     #
     for i in range(len(Gaussian_E0)):
-        f = (0.5 / np.sqrt(np.log(2)))
-        eps_2_osc = [
-            Gaussian_Amplitude[i] * np.exp(
-                -((e - Gaussian_E0[i]) / (f * Gaussian_Br[i])) ** 2
-            ) - \
-            Gaussian_Amplitude[i] * np.exp(
-                -((e + Gaussian_E0[i]) / (f * Gaussian_Br[i])) ** 2
-            )
-            for e in waveNumber
-        ]
+        eps_1_osc, eps_2_osc = auxfuncs.gaussian(waveNumber, Gaussian_E0[i], Gaussian_Amplitude[i], Gaussian_Br[i])
+        eps_2 += eps_2_osc
+        eps_1 += eps_1_osc
 
-        eps_2 = np.add(eps_2, eps_2_osc)
-
-
-    # #
-    # # Tauc-Lorentz oscillators -- only for UV
-    # #
-    # for i in range(len(TL_E0)):
-    #     eps_2_osc = np.zeros(eV.shape)
-    #     for j, e in enumerate(eV):
-    #         if e > TL_Eg[i]:
-    #             eps_2_osc[j] = (1 / e) * (
-    #                     (TL_A[i] * TL_E0[i] * TL_C[i] * (e - TL_Eg[i]) ** 2) / (
-    #                         (e ** 2 - TL_E0[i] ** 2) ** 2 + TL_C[i] ** 2 * e ** 2)
-    #             )
-    #
-    #     eps_2 = np.add(eps_2, eps_2_osc)
-
-
-    #
-    # KK integral
-    #
-    eps_1_osc = np.zeros(waveNumber.shape)
-    for i, e in enumerate(waveNumber):
-        prefactor = (2 / np.pi) * 2 * dcm
-
-        maclaurin_sum = 0
-        if i % 2 == 0:
-            js = [z for z in range(waveNumber.shape[-1])[1::2]]
-        else:
-            js = [z for z in range(waveNumber.shape[-1])[0::2]]
-
-        for j in js:
-            maclaurin_sum += (1. / 2.) * (
-                    eps_2[j] / (waveNumber[j] - e) +
-                    eps_2[j] / (waveNumber[j] + e)
-            )
-        eps_1_osc[i] = prefactor * maclaurin_sum
-
-
-    #eps_1 = np.add(epsilon_1_inf, epsilon_1_UV, dtype=np.complex128)
-    eps_1 = np.add(epsilon_1_inf, eps_1_osc)
+    eps_1 += eps_inf
 
     epsilon = np.asarray(eps_1 + 1j * eps_2, dtype=np.complex128)
 
