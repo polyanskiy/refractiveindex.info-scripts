@@ -74,6 +74,13 @@ def taucLorentz_KK(eV, E0, A, C, Eg):
 
     return eps_1, eps_2
 
+def drude(eV, A, FWHM):
+    Br = FWHM #/ (2 * np.sqrt(np.log(2)))
+
+    eps_2 = [A * (Br / e) / (1 + e**2 + Br**2) for e in eV]
+    eps_1 = [-A * Br**2 / (1 + e**2 * Br**2) for e in eV]
+    return np.asarray(eps_1), np.asarray(eps_2)
+
 
 def lorentz(eV, A, FWHM, Eg):
     Br = FWHM #/ (2 * np.sqrt(np.log(2)))
