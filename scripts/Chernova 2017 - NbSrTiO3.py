@@ -49,7 +49,7 @@ def generate_epsilon():
     #
     # Lorentz-Drude
     #
-    eps_drude_1, eps_drude_2 = auxfuncs.drude(eV,Drude_Amplitude, Drude_FWHM)
+    eps_drude_1, eps_drude_2 = auxfuncs.drude(eV, Drude_Amplitude, Drude_FWHM)
     eps_1 += eps_drude_1
     eps_2 += eps_drude_2
 
