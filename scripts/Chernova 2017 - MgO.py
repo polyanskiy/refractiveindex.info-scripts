@@ -84,6 +84,8 @@ eps_lor = np.zeros(epsilon.shape)
 for i, e in enumerate(eV):
     eps_lor[i] = 1 + Lorentz_Amplitude**2 / (Lorentz_E**2 - e**2 - 1j * e * Lorentz_FWHM)
 
+epsilon = np.add(epsilon, eps_lor)    
+
 n = (epsilon**.5).real
 k = (epsilon**.5).imag
 
