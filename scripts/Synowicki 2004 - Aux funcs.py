@@ -91,7 +91,7 @@ def gaussian(eV, E0, Amplitude, Br, kk="ML"):
     eps_2_osc = np.asarray([
         Amplitude*np.exp(
             -((e-E0)/(f*Br))**2
-        ) -
+        ) +
         Amplitude*np.exp(
             -((e+E0)/(f*Br))**2
         )
