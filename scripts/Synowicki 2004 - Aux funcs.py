@@ -56,7 +56,7 @@ matplotlib.use("TkAgg")
 #
 
 
-def taucLorentz_KK(eV, E0, A, C, Eg):
+def taucLorentz_KK(eV, E0, A, C, Eg, kk="ML"):
     eps_2 = np.zeros(eV.shape)
 
     for j, e in enumerate(eV):
@@ -68,7 +68,10 @@ def taucLorentz_KK(eV, E0, A, C, Eg):
                     )
             )
 
-    eps_1 = kk_integral_maclaurin(eV, eps_2)
+    if kk == "ML":
+        eps_1 = kk_integral_maclaurin(eV, eps_2)
+    elif kk == "FFT":
+        eps_1 = kk_integral_fft(eV, eps_2)
 
     return eps_1, eps_2
 
@@ -83,9 +86,9 @@ def lorentz(eV, A, FWHM, Eg):
     return np.asarray(eps_1), np.asarray(eps_2)
 
 
-def gaussian(eV, E0, Amplitude, Br):
+def gaussian(eV, E0, Amplitude, Br, kk="ML"):
     f = (0.5 / np.sqrt(np.log(2)))
-    eps_2_osc = [
+    eps_2_osc = np.asarray([
         Amplitude*np.exp(
             -((e-E0)/(f*Br))**2
         ) -
@@ -93,9 +96,13 @@ def gaussian(eV, E0, Amplitude, Br):
             -((e+E0)/(f*Br))**2
         )
         for e in eV
-    ]
+    ])
 
-    eps_1_osc = kk_integral_maclaurin(eV, eps_2_osc)
+    if kk == "ML":
+        eps_1_osc = kk_integral_maclaurin(eV, eps_2_osc)
+    elif kk == "FFT":
+        eps_1_osc = kk_integral_fft(eV, eps_2_osc)
+
     return eps_1_osc, np.asarray(eps_2_osc)
 
 
@@ -122,4 +129,66 @@ def kk_integral_maclaurin(f, eps2):
         eps1[i] = prefactor * maclaurin_sum
 
     return eps1
+
+
+def kk_integral_fft_simple(f, eps2, num_pts = None):
+    if not num_pts:
+        num_pts = 2
+        while num_pts < eps2.shape[0]:
+            num_pts *= 2
+
+    eps2_padded = np.zeros(num_pts)
+    eps2_padded[0:eps2.shape[0]] = eps2
+
+    # First FFT
+    step1 = np.fft.ifft(eps2_padded)
+    step1[eps2.shape[0]:] = np.zeros(num_pts-eps2.shape[0])
+
+    # Second FFT
+    step2 = np.fft.fft(step1)
+
+    eps1 = 2 * np.imag(step2[0:eps2.shape[0]])
+
+    return eps1
+
+def kk_integral_fft(f, eps2, num_pts = None):
+
+    df = f[1] - f[0]
+
+    # Reverse to match paper
+    r_eps2 = eps2[::-1]
+
+    # Pad zero
+    padding_f = []
+    if f[0] > 0:
+        padding_f = np.arange(-f[0], f[0], df)
+
+    padding_zeros = np.zeros(padding_f.shape)
+
+    full_r_eps2 = np.append(r_eps2, padding_zeros)
+
+    # Pad negative
+    neg_eps2 = np.multiply(eps2, -1)
+
+    full_r_eps2 = np.append(full_r_eps2, neg_eps2)
+
+    # Pad
+    if not num_pts:
+        num_pts = 2
+        while num_pts < 4 * full_r_eps2.shape[0]:
+            num_pts *= 2
+
+    eps2_padded = np.zeros(num_pts)
+    eps2_padded[0:full_r_eps2.shape[0]] = full_r_eps2
+
+    # First FFT
+    step1 = np.fft.ifft(eps2_padded)
+    step1[full_r_eps2.shape[0]:] = np.zeros(num_pts-full_r_eps2.shape[0])
+
+    # Second FFT
+    step2 = np.fft.fft(step1)
+
+    eps1 = -2 * np.imag(step2[0:eps2.shape[0]])
+
+    return eps1[::-1]
 

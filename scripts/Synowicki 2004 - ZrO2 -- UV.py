@@ -16,7 +16,7 @@ import matplotlib
 matplotlib.use("TkAgg")
 
 
-def generate_epsilon(num_points=10000, min_eV=0.01, max_eV=30.0):
+def generate_epsilon(num_points=10000, min_eV=0.01, max_eV=30.0, kk="ML"):
     auxfuncs = __import__("Synowicki 2004 - Aux funcs")
     #
     # Model parameters
@@ -51,7 +51,7 @@ def generate_epsilon(num_points=10000, min_eV=0.01, max_eV=30.0):
     # Tauc-Lorentz oscillators -- only for UV
     #
     for i in range(len(TL_E0)):
-        eps_1_osc, eps_2_osc = auxfuncs.taucLorentz_KK(eV, TL_E0[i], TL_A[i], TL_C[i], TL_Eg[i])
+        eps_1_osc, eps_2_osc = auxfuncs.taucLorentz_KK(eV, TL_E0[i], TL_A[i], TL_C[i], TL_Eg[i], kk)
         eps_2 += eps_2_osc
         eps_1 += eps_1_osc
 
