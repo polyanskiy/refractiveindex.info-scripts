@@ -16,7 +16,7 @@ import matplotlib
 matplotlib.use("TkAgg")
 
 
-def generate_epsilon():
+def generate_epsilon(num_points=10000, min_eV=0.01, max_eV=30.0):
     auxfuncs = __import__("Synowicki 2004 - Aux funcs")
     #
     # Model parameters
@@ -45,8 +45,7 @@ def generate_epsilon():
     eps_inf = 1
 
     # Simulate range
-    num_points = 2000
-    eV = np.linspace(0.01, 15.0, num_points, True)
+    eV = np.linspace(min_eV, max_eV, num_points, True)
 
 
     #
