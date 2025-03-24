@@ -151,6 +151,7 @@ def kk_integral_fft_simple(f, eps2, num_pts = None):
 
     return eps1
 
+
 def kk_integral_fft(f, eps2, num_pts = None):
 
     df = f[1] - f[0]

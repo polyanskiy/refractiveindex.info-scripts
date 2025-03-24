@@ -16,7 +16,7 @@ import matplotlib
 matplotlib.use("TkAgg")
 
 
-def generate_epsilon():
+def generate_epsilon(num_points=6000, wavenum_min=300., wavenum_max=5900., kk="ML"):
     auxfuncs = __import__("Synowicki 2004 - Aux funcs")
     #
     # Model parameters
@@ -43,9 +43,7 @@ def generate_epsilon():
     eps_inf = 1
 
     # Simulate range
-    num_points = 6000
-
-    waveNumber = np.linspace(1, 6000, num_points, True) #cm-1
+    waveNumber = np.linspace(wavenum_min, wavenum_max, num_points, True)  # cm-1
 
     #
     # Oscillators
