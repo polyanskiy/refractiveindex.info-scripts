@@ -23,19 +23,13 @@ def generate_epsilon(num_points=6000, wavenum_min=300., wavenum_max=5900., kk="M
     #
 
     # Gaussian cm-1 -- only IR
-    Gaussian_Amplitude = [24.263, 7.32, 32.304, 0.2135, 1.1005, 1.6355, 0.4633]
-    Gaussian_E0 = [69.044, 331.92, 339.2, 350.77, 476.18, 539.94, 709.72]
-    Gaussian_Br = [322.13, 43.363, 134.76, 907.53, 68.217, 122.4, 99.048]
-
-    # #Tauc Lorentz eV -- only UV
-    # TL_A = [98.541, 145.09, 255.06]
-    # TL_E0 = [6.1261, 7.2693, 8.7795]
-    # TL_C = [1.2042, 2.2904, 2.8711]
-    # TL_Eg = [5.124, 5.3382, 6.8865]
+    Gaussian_Amplitude = np.asarray([24.263,    7.32,   32.304, 0.2135, 1.1005, 1.6355, 0.4633])
+    Gaussian_E0 = np.asarray(       [69.044,    331.92, 339.2,  350.77, 476.18, 539.94, 709.72])
+    Gaussian_Br = np.asarray(       [322.13,    43.363, 134.76, 907.53, 68.217, 122.4,  99.048])
 
     # Poles
 
-    eps_inf = 1
+    eps_inf = 5
 
     waveNumber = np.linspace(wavenum_min, wavenum_max, num_points, True)  # cm-1
 

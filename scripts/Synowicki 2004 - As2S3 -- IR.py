@@ -42,7 +42,7 @@ def generate_epsilon(num_points=6000, wavenum_min=300., wavenum_max=5900., kk="M
 
     #Poles
 
-    eps_inf = 1.
+    eps_inf = 6.
 
     # Simulate range
     waveNumber = np.linspace(wavenum_min, wavenum_max, num_points, True)  # cm-1
