@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Original data: Johnston et al. 1977, https://doi.org/10.1063/1.1660761
+# Original data: Johnston et al. 1971, https://doi.org/10.1063/1.1660761
 
 # Version history
 # 2026-01-16 first version (Pavel Dmitriev)
