@@ -68,23 +68,6 @@ def tauc_lorentz(eV, E0, A, C, Eg):
             + 2 * (A*E0*C)/(np.pi*xi4)*Eg*np.log((np.abs(e-Eg)*(e+Eg))/np.sqrt((E0**2 - Eg**2)**2+Eg**2*C**2))
         )
 
-        # gamma2 = sqrt(Ei**2 - Ci**2 / 2) ** 2
-        # alpha = sqrt(4 * Ei**2 - Ci**2)
-        # aL = (Eg**2 - Ei**2) * E**2 + Eg**2 * Ci**2 - Ei**2 * (Ei**2 + 3 * Eg**2)
-        # aA = (E**2 - Ei**2) * (Ei**2 + Eg**2) + Eg**2 * Ci**2
-        # zeta4 = (E**2 - gamma2) ** 2 + alpha**2 * Ci**2 / 4
-        #
-        # # fmt: off
-        # return (
-        #     Ai*Ci*aL/2.0/np.pi/zeta4/alpha/Ei*np.log((Ei**2 + Eg**2 + alpha*Eg)/(Ei**2 + Eg**2 - alpha*Eg)) - \
-        #     Ai*aA/np.pi/zeta4/Ei*(np.pi - np.arctan((2.0*Eg + alpha)/Ci) + np.arctan((alpha - 2.0*Eg)/Ci)) + \
-        #     2.0*Ai*Ei*Eg/np.pi/zeta4/alpha*(E**2 - gamma2)*(np.pi + 2.0*np.arctan(2.0/alpha/Ci*(gamma2 - Eg**2))) - \
-        #     Ai*Ei*Ci*(E**2 + Eg**2)/np.pi/zeta4/E*np.log(abs(E - Eg)/(E + Eg)) + \
-        #     2.0*Ai*Ei*Ci*Eg/np.pi/zeta4 * \
-        #     np.log(abs(E - Eg) * (E + Eg) / sqrt((Ei**2 - Eg**2)**2 + Eg**2 * Ci**2))
-        # )
-
-
     return eps1, eps2
 
 
