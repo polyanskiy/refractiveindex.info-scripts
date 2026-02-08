@@ -3,6 +3,10 @@
 # Kramers-Kroning Integration https://doi.org/10.1366/0003702884430380
 
 # Tauc-Lorentz oscillators https://doi.org/10.1063/1.118064
+#  eps1 correction erratum: https://doi.org/10.1063/1.118155
+
+# Gaussian closed form
+# https://doi.org/10.1016/J.JNONCRYSOL.2006.02.004
 
 # Version history
 # 2025-03-07 first version (Pavel Dmitriev)
@@ -10,53 +14,81 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.special
 
 import matplotlib
 matplotlib.use("TkAgg")
-#
-# def tauc_lorentz_analytic(eV, Eg, A, E0, C):
-#
-#     #
-#     # Epsilon 2
-#     #
-#
-#     eps2 = np.zeros(eV.shape)
-#     for i, e in enumerate(eV):
-#         if e > Eg:
-#             eps2[i] = (1 / e) * ( (A * E0 * C * (e - Eg)**2)
-#                              / ((e**2 - E0**2)**2 + C**2 * e**2))
-#
-#     #
-#     # Epsilon 1 closed form
-#     #
-#     eps1 = np.zeros(eV.shape)
-#     for i, e in enumerate(eV):
-#
-#         alpha_ln = (Eg**2 - E0**2)*e*2 + Eg**2*C**2 - E0**2 * (E0**2 + 3*Eg**2)
-#         alpha_atan = (e**2 - E0**2) * (E0**2 +Eg**2) + Eg**2 * C**2
-#
-#         alpha = np.sqrt(4 * E0**2 - C**2)
-#         gamma = np.sqrt(E0**2 - C**2/2)
-#
-#         xi4 = (e**2 - gamma**2)**2 + alpha**2 * C**2 / 4
-#
-#         eps1[i] = (
-#             + (1/2)*(A/np.pi)*(C/xi4)*(alpha_ln/(alpha*E0))*np.log2(
-#                 (E0**2 + Eg**2 + alpha*Eg) / (E0**2 + Eg**2 - alpha*Eg)
-#             )
-#             - (A / (np.pi * xi4)) * (alpha_atan/E0) * (np.pi
-#                                                        - np.arctan((2*Eg+alpha)/C)
-#                                                        + np.arctan((-2*Eg+alpha)/C))
-#             + 2 * (A*E0*C)/(np.pi*xi4) * (Eg*(e**2-gamma**2)*(np.pi + 2*np.arctan((gamma**2 - Eg**2)/(alpha*C))))
-#             - 2 * ((A*E0*C)/(np.pi * xi4))*((e**2 + Eg**2)/e)*np.log2(np.abs(e-Eg)/(e+Eg))
-#             + 2 * (A*E0*C)/(np.pi*xi4)*Eg*np.log2((np.abs(e-Eg)*(e+Eg))/np.sqrt((E0**2 - Eg**2)**2+Eg**2*C**2))
-#         )
-#
-#     return eps1, eps2
-#
+
+import elli
+
+def tauc_lorentz(eV, E0, A, C, Eg):
+
+    #
+    # Epsilon 2
+    #
+
+    eps2 = np.zeros(eV.shape)
+
+    for j, e in enumerate(eV):
+        if e > Eg:
+            eps2[j] = (1. / e) * (
+                    (A * E0 * C * (e - Eg) ** 2) /
+                    (
+                        (e ** 2 - E0 ** 2) ** 2 + C ** 2 * e ** 2
+                    )
+            )
+
+    #
+    # Epsilon 1 closed form
+    #
+    eps1 = np.zeros(eV.shape)
+    for i, e in enumerate(eV):
+
+        alpha_ln = (Eg**2 - E0**2) * e**2 + Eg**2 * C**2 - E0**2 * (E0**2 + 3*Eg**2)
+        alpha_atan = (e**2 - E0**2) * (E0**2 + Eg**2) + Eg**2 * C**2
+
+        alpha = np.sqrt(4 * E0**2 - C**2)
+        gamma = np.sqrt(E0**2 - C**2/2)
+
+        xi4 = (e**2 - gamma**2)**2 + alpha**2 * C**2 / 4
+
+        eps1[i] = (
+            + ((A*C)/(np.pi*xi4))*(alpha_ln/(2*alpha*E0))*np.log(
+                (E0**2 + Eg**2 + alpha*Eg) / (E0**2 + Eg**2 - alpha*Eg)
+            )
+
+            - (A / (np.pi * xi4)) * (alpha_atan/E0) * (np.pi
+                                                       - np.arctan((2*Eg+alpha)/C)
+                                                       + np.arctan((-2*Eg+alpha)/C))
+
+            + 2 * (A*E0)/(np.pi*xi4*alpha) * (Eg*(e**2-gamma**2)*(np.pi + 2*np.arctan(2*(gamma**2 - Eg**2)/(alpha*C))))
+
+            - ((A*E0*C)/(np.pi * xi4))*((e**2 + Eg**2)/e)*np.log(np.abs(e-Eg)/(e+Eg))
+
+            + 2 * (A*E0*C)/(np.pi*xi4)*Eg*np.log((np.abs(e-Eg)*(e+Eg))/np.sqrt((E0**2 - Eg**2)**2+Eg**2*C**2))
+        )
+
+        # gamma2 = sqrt(Ei**2 - Ci**2 / 2) ** 2
+        # alpha = sqrt(4 * Ei**2 - Ci**2)
+        # aL = (Eg**2 - Ei**2) * E**2 + Eg**2 * Ci**2 - Ei**2 * (Ei**2 + 3 * Eg**2)
+        # aA = (E**2 - Ei**2) * (Ei**2 + Eg**2) + Eg**2 * Ci**2
+        # zeta4 = (E**2 - gamma2) ** 2 + alpha**2 * Ci**2 / 4
+        #
+        # # fmt: off
+        # return (
+        #     Ai*Ci*aL/2.0/np.pi/zeta4/alpha/Ei*np.log((Ei**2 + Eg**2 + alpha*Eg)/(Ei**2 + Eg**2 - alpha*Eg)) - \
+        #     Ai*aA/np.pi/zeta4/Ei*(np.pi - np.arctan((2.0*Eg + alpha)/Ci) + np.arctan((alpha - 2.0*Eg)/Ci)) + \
+        #     2.0*Ai*Ei*Eg/np.pi/zeta4/alpha*(E**2 - gamma2)*(np.pi + 2.0*np.arctan(2.0/alpha/Ci*(gamma2 - Eg**2))) - \
+        #     Ai*Ei*Ci*(E**2 + Eg**2)/np.pi/zeta4/E*np.log(abs(E - Eg)/(E + Eg)) + \
+        #     2.0*Ai*Ei*Ci*Eg/np.pi/zeta4 * \
+        #     np.log(abs(E - Eg) * (E + Eg) / sqrt((Ei**2 - Eg**2)**2 + Eg**2 * Ci**2))
+        # )
 
 
-def taucLorentz_KK(eV, E0, A, C, Eg, kk="ML"):
+    return eps1, eps2
+
+
+def tauc_lorentz_kk(eV, E0, A, C, Eg, kk="ML"):
     eps_2 = np.zeros(eV.shape)
 
     for j, e in enumerate(eV):
@@ -86,7 +118,31 @@ def lorentz(eV, A, FWHM, Eg):
     return np.asarray(eps_1), np.asarray(eps_2)
 
 
-def gaussian(eV, E0, Amplitude, Br, kk="ML"):
+def gaussian(eV, E0, Amplitude, Br):
+    f = (0.5 / np.sqrt(np.log(2)))
+    eps1= np.asarray([
+        (2*Amplitude/np.sqrt(np.pi)) * (
+            scipy.special.dawsn((e + E0)/(f*Br))
+            - scipy.special.dawsn((e - E0)/(f*Br))
+        )
+        for e in eV
+    ])
+
+    eps2 = np.asarray([
+        Amplitude * np.exp(
+            -((e - E0)/(f*Br))**2
+        )
+        - Amplitude * np.exp(
+            -((e + E0)/(f*Br))**2
+        )
+        for e in eV
+    ])
+
+
+    return eps1, eps2
+
+
+def gaussian_kk(eV, E0, Amplitude, Br, kk="ML"):
     f = (0.5 / np.sqrt(np.log(2)))
     eps_2_osc = np.asarray([
         Amplitude*np.exp(
