@@ -1,28 +1,35 @@
 # refractiveindex.info-scripts
-Collection of Python scripts related to refractiveindex.info database
 
-## check_db
-Checks the integrity of the `refractiveindex.info database`
+A collection of Python scripts related to the
+[refractiveindex.info](https://refractiveindex.info) database.
 
-## agf2yml
-Converts ZEMAX `.agf` glass catalog format into `YAML` format used by the refractiveindex.info database
+## Overview
 
-## ldbb
-Calculates optical constants of several metals
+This repository contains utility scripts for working with the
+refractiveindex.info database, including data validation, format
+conversion, and calculation of optical constants based on published
+models.
 
-# Other projects related to refractiveindex.info dtabase
+## Scripts
 
-## PyTMM
-https://github.com/kitchenknif/PyTMM
+### `scripts/`
 
-Database browser and Transfer Matrix Method implementation (by Pavel Dmitriev)
+Python scripts for calculating optical constants using published
+dispersion models and parameterizations.
 
-## refractiveindex.info-sqlite
-https://github.com/HugoGuillen/refractiveindex.info-sqlite
+### `check_db/`
 
-Python 3 + SQLite wrapper for the refractiveindex.info database (by Hugo Guillen)
+Tools for checking the integrity and consistency of the
+`refractiveindex.info` database (schema validation, parsing, and basic
+sanity checks).
 
-## refractiveindex.info
-https://github.com/cinek810/refractiveindex.info
+### `agf2yml/`
 
-Support for operations not possible through the web interface, e.g. find materials with refractive index within a specified range (by Marcin Stolarek)
+Conversion tools for transforming ZEMAX `.agf` glass catalog files into
+the `YAML` format used by the refractiveindex.info database.
+
+### `ldbb/`
+
+Scripts for calculating optical constants of several metals using
+established physical models.
+

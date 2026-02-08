@@ -31,7 +31,7 @@ if __name__ == "__main__":
     ################################## nk #####################################
     catalog = "catalog-nk.yml"
     lib_path = os.path.join(db_path, catalog)
-    library = yaml.safe_load(open(lib_path, 'r').read())
+    library = yaml.safe_load(open(lib_path, 'r', encoding='utf8').read())
     
     print("\nFinding data files listed in " + catalog + "\n")
     
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     ################################## n2 #####################################
     catalog = "catalog-n2.yml"
     lib_path = os.path.join(db_path, catalog)
-    library = yaml.safe_load(open(lib_path, 'r').read())
+    library = yaml.safe_load(open(lib_path, 'r', encoding='utf8').read())
     
     print("\nFinding data files listed in " + catalog + "\n")
                             
