@@ -115,27 +115,30 @@ def generate_epsilon(fit_points=1000, min_um=1.7, max_um=33, gen_points=10000, m
 
 
 if __name__ == "__main__":
-    fit_points = 500
+    fit_points = 200
+
+    # #
+    # # IR
+    # #
+    # min_um = 1.7
+    # max_um = 33.
 
     #
-    # IR
+    # UV
     #
-    min_um = 1.7
-    max_um = 33.
+    min_ev = 0.73
+    max_ev = 9.53
+    min_um = np.divide(1.23984193, max_ev)
+    max_um = np.divide(1.23984193, min_ev)
+
     wl_um, epsilon = generate_epsilon(fit_points=fit_points, min_um=min_um, max_um=max_um)
-
-    # #
-    # # UV
-    # #
-    # min_ev = 0.73
-    # max_ev = 9.53
-    # min_um = np.divide(1.23984193, min_ev)
-    # max_um = np.divide(1.23984193, max_ev)
-    # wl_um, epsilon = generate_epsilon(fit_points=fit_points, min_um=min_um, max_um=max_um)
 
     n = (epsilon ** .5).real
     k = (epsilon ** .5).imag
 
+    for i in range(len(k)):
+        if k[i] < 1e-10:
+            k[i] = 0.0
 
     # ============================   DATA OUTPUT   =================================
     file = open('out.txt', 'w')
