@@ -7,9 +7,9 @@
 import numpy as np
 
 ########################## input parameters ###################################
-n1 = 1.0              #complex ior of first medium (1 for vacuum)
-n2 = 2.6332 + 3.3060j #complex ior of second medium
-θi = 81.0             #incidence angle (degrees)
+n1 = 1.0                 #complex ior of first medium (1 for vacuum)
+n2 = 3.4209 + 7.7479e-7j #complex ior of second medium
+θi = 0                   #incidence angle (degrees)
 ###############################################################################
 
 θi = np.deg2rad(θi)              # incidence angle (radians)
