@@ -94,14 +94,19 @@ def generate_uv_oscillators(num_points=10000, min_eV=0.01, max_eV=30.0):
     return eV, eps_1, eps_2
 
 
-def generate_epsilon(fit_points=1000, min_um=1.7, max_um=33, gen_points=10000, min_ev=0.01, max_ev=30.0, min_wavenum=300., max_wavenum=5900.):
+def generate_epsilon(fit_points=1000, lin_wavelength=True, min_um=1.7, max_um=33, gen_points=10000, min_ev=0.01, max_ev=30.0, min_wavenum=300., max_wavenum=5900., kk="ML"):
     waveNumber, osc_ir_1, osc_ir_2 = generate_ir_oscillators(num_points=gen_points, wavenum_min=min_wavenum, wavenum_max=max_wavenum)
     eV, osc_uv_1, osc_uv_2 = generate_uv_oscillators(num_points=gen_points, min_eV=min_ev, max_eV=max_ev)
 
     # Model range
-    wl_um = np.linspace(max_um, min_um, fit_points, True)
-    fit_wavenumber = np.divide(1e4, wl_um)
-    fit_ev = np.divide(1.23984193, wl_um)
+    if lin_wavelength:
+        wl_um = np.linspace(max_um, min_um, fit_points, True)
+        fit_wavenumber = np.divide(1e4, wl_um)
+        fit_ev = np.divide(1.23984193, wl_um)
+    else:
+        fit_wavenumber = np.linspace(1e4/max_um, 1e4/min_um, fit_points, True)
+        wl_um = np.divide(1e4, fit_wavenumber)
+        fit_ev = np.divide(1.23984193, wl_um)
 
     ir_osc2_interp = np.interp(fit_wavenumber, waveNumber, osc_ir_2)
     ir_osc1_interp = np.interp(fit_wavenumber, waveNumber, osc_ir_1)
@@ -121,6 +126,7 @@ if __name__ == "__main__":
     # #
     # min_um = 1.7
     # max_um = 33.
+    # wl_um, epsilon = generate_epsilon(fit_points=fit_points, lin_wavelength=True, min_um=min_um, max_um=max_um)
 
     #
     # UV
@@ -130,10 +136,14 @@ if __name__ == "__main__":
     min_um = np.divide(1.23984193, max_ev)
     max_um = np.divide(1.23984193, min_ev)
 
-    wl_um, epsilon = generate_epsilon(fit_points=fit_points, min_um=min_um, max_um=max_um)
+    wl_um, epsilon = generate_epsilon(fit_points=fit_points, lin_wavelength=False, min_um=min_um, max_um=max_um)
 
     n = (epsilon ** .5).real
     k = (epsilon ** .5).imag
+
+    for i in range(len(k)):
+        if k[i] < 1e-10:
+            k[i] = 0.
 
     # ============================   DATA OUTPUT   =================================
     file = open('out.txt', 'w')
