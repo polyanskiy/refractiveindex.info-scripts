@@ -1,7 +1,7 @@
 # Original data: Ferrini 2002, https://doi.org/10.1140/epjb/e2002-00177-x
 
 # CHANGELOG
-# 2026-04-28 [Misha Polyanskiy] original version
+# 2026-04-29 [Misha Polyanskiy] original version
 
 ###############################################################################
 
@@ -11,11 +11,8 @@ import matplotlib.pyplot as plt
 
 def n_func(λ):
     # complex n (n+ik)
-    # λ: wavelength, 0.3 to 1.69 μm
 
-    #c = 2.99792458e14 #μm/s
     ν = 10000/λ       # 1/cm
-    
     
     ε_inf = 9.4
     
